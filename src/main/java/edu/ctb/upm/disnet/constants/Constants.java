@@ -18,7 +18,7 @@ import java.util.List;
 @Component
 public class Constants {
 
-    @Value("${my.service.client.disease_album.name}")//OK
+    @Value("${my.service.client.disease_album.name}")//OK_OK
     public String DISNET_DIALIST_CLIENT_NAME;
     @Value("${my.service.client.disease_album.url}")
     public String SERVICE_DIALIST_URL;
