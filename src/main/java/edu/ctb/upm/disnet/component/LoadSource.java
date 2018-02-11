@@ -29,7 +29,9 @@ public class LoadSource {
 
     public List<XmlSource> loadSources() throws Exception {
 
-        File xmlFile = new File( Constants.XML_SOURCE_FILE );
+        //File xmlFile = new File( Constants.XML_SOURCE_FILE );
+        File xmlFile = new File( Constants.XML_SOURCE_FILE_EXTERNAL );
+        System.out.println("path: "+xmlFile.getPath());
         oReadXml.file( xmlFile );
 
         return oReadXml.read();

@@ -33,7 +33,7 @@ public class ConnectDocument {
      * EJM:
      * 		200 OK			300 Multiple Choices
      * 		301 Moved Permanently	305 Use Proxy
-     * 		400 Bad Request		403 Forbidden
+     * 		400 Bad RequestTextExtraction		403 Forbidden
      * 		404 Not Found		500 Internal Server Error
      * 		502 Bad Gateway		503 Service Unavailable
      * @paramFromObject getLink()
@@ -47,12 +47,15 @@ public class ConnectDocument {
         //System.out.println(URLEncoder.encode(common.cutStringPerformance(30, 0,Constants.HTTP_HEADER +link), "UTF-8"));
 
         try {//Constants.HTTP_HEADER +
-            Connection connection = Jsoup.connect( connection_.getLink().replace("http", "https") ).userAgent("Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:25.0) Gecko/20100101 Firefox/25.0").referrer("http://www.google.com").timeout(20*1000);
+            String link_ = "";
+            if (connection_.getLink().contains("http://")) link_ = connection_.getLink().replace("http", "https");
+            else if (connection_.getLink().contains("https://")) link_ = connection_.getLink();
+            Connection connection = Jsoup.connect(link_).userAgent("Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:25.0) Gecko/20100101 Firefox/25.0").referrer("http://www.google.com").timeout(20 * 1000);;
             // Connection connection = Jsoup.connect( connection_.getLink().replace("http", "https") )
             //oResponse = connection.execute(); || Jsoup.connect(Constants.HTTP_HEADER + connection_.getLink()
             connection_.setoDoc( connection.get()/*getHtmlDocument(connection)*/ );
             connection_.setStatus( connection.execute().statusMessage() );
-            connection_.setStatusCode( connection.execute().statusCode() );
+            connection_.setStatusCode( connection.execute().statusCode() + "" );
         } catch (Exception e) {
             System.out.println("Exception to connect with the page: (" + connection_.getLink() + ") " + e.getMessage() + " " +e.getStackTrace());
             connection_ = tryConnect(connection_);
@@ -69,16 +72,20 @@ public class ConnectDocument {
 
     public Connection_ tryConnect(Connection_ connection_) throws UnsupportedEncodingException {
         //http://en.wikipedia.org/wiki/
-        String convertLink = Constants.HTTP_HEADER + "en.wikipedia.org/wiki/" + URLEncoder.encode(common.cutStringPerformance(29, 0, connection_.getLink()), "UTF-8");
+        String convertLink = "en.wikipedia.org/wiki/" + URLEncoder.encode(common.cutStringPerformance(29, 0, connection_.getLink()), "UTF-8");
+        //String convertLink = Constants.HTTPS_HEADER + "en.wikipedia.org/wiki/" + URLEncoder.encode(common.cutStringPerformance(29, 0, connection_.getLink()), "UTF-8");
         System.out.println(connection_.getLink()+ " - " +convertLink);
 
         try {//Constants.HTTP_HEADER +
-            Connection connection = Jsoup.connect( convertLink.replace("http", "https") ).userAgent("Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:25.0) Gecko/20100101 Firefox/25.0").referrer("http://www.google.com").timeout(20*1000);
+            String link_ = "";
+            if (connection_.getLink().contains("http://")) link_ = convertLink.replace("http", "https");
+            else if (convertLink.contains("https://")) link_ = connection_.getLink();
+            Connection connection = Jsoup.connect( link_ ).userAgent("Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:25.0) Gecko/20100101 Firefox/25.0").referrer("http://www.google.com").timeout(20*1000);
             // Connection connection = Jsoup.connect( connection_.getLink().replace("http", "https") )
             //oResponse = connection.execute(); || Jsoup.connect(Constants.HTTP_HEADER + connection_.getLink()
             connection_.setoDoc( connection.get()/*getHtmlDocument(connection)*/ );
             connection_.setStatus( connection.execute().statusMessage() );
-            connection_.setStatusCode( connection.execute().statusCode() );
+            connection_.setStatusCode( connection.execute().statusCode() + "" );
         } catch (Exception e) {
             System.out.println("Exception to connect with the page: (" + connection_.getLink() + ") " + e.getMessage() + " " +e.getStackTrace());
             connection_.setStatus( StatusHttpEnum.NOT_FOUND.getDescripcion() );

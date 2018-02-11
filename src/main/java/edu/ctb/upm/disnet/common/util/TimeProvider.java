@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 
@@ -43,6 +44,13 @@ public class TimeProvider {
     public String getNowFormatyyyyMMdd(){
         //return new Date(117, 05, 29);
         return new SimpleDateFormat("yyyy-MM-dd").format(new Date(new java.util.Date().getTime()));
+    }
+
+    public Timestamp getTimestamp(){return new Timestamp(System.currentTimeMillis());}
+
+    public String getTimestampFormat() throws ParseException {
+        java.util.Date date = new java.util.Date();
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSS").format(date);
     }
 
 }

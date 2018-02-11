@@ -1,12 +1,20 @@
 package edu.ctb.upm.disnet.service;
 
-import edu.upm.midas.data.extraction.xml.model.XmlLink;
-import edu.upm.midas.data.relational.service.impl.PopulateDbNative;
-import edu.upm.midas.utilsservice.UtilDate;
+import edu.ctb.upm.disnet.common.util.TimeProvider;
+import edu.ctb.upm.disnet.component.ExtractionWikipedia;
+import edu.ctb.upm.disnet.enums.ApiErrorEnum;
+import edu.ctb.upm.disnet.enums.StatusHttpEnum;
+import edu.ctb.upm.disnet.model.Response;
+import edu.ctb.upm.disnet.model.extraction.Source;
+import edu.ctb.upm.disnet.model.extraction.code.Resource;
+import edu.ctb.upm.disnet.model.xml.XmlLink;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -22,35 +30,79 @@ import java.util.List;
 public class ExtractService {
 
     @Autowired
-    private PopulateDbNative populateDbNative;
+    private TimeProvider timeProvider;
     @Autowired
-    private UtilDate utilDate;
+    private ExtractionWikipedia extractionWikipedia;
 
-    public boolean extract() throws Exception {
-        boolean res = false;
-        String inicio = utilDate.getTime();
-        Date version = utilDate.getSqlDate();
-        List<XmlLink> externalDiseaseLinkList = populateDbNative.getDiseaseLinkListFromDBPedia(version);
 
-        if (externalDiseaseLinkList!=null) {
-            populateDbNative.populateResource(externalDiseaseLinkList);
-            populateDbNative.populateSemanticTypes();
-            populateDbNative.populate(externalDiseaseLinkList, version);
-            res = true;
-        }else{
-            System.out.println("ERROR disease album");
+
+    public Response extract(List<XmlLink> externalDiseaseLinkList) throws Exception {
+        Response response = new Response();
+        List<Source> sourceList = null;
+
+        String start = timeProvider.getTimestampFormat();
+        String end = null;
+        Date version = timeProvider.getSqlDate();
+        try {
+            sourceList = extractionWikipedia.extract(externalDiseaseLinkList);
+            if (sourceList!=null) {
+                response.setResponseCode(StatusHttpEnum.OK.getClave());
+                response.setResponseMessage(StatusHttpEnum.OK.getDescripcion());
+            }else{
+                response.setResponseCode(ApiErrorEnum.RESOURCES_NOT_FOUND.getKey());
+                response.setResponseMessage(ApiErrorEnum.RESOURCES_NOT_FOUND.getDescription());
+            }
+        }catch (Exception e){
+            response.setSources(new ArrayList<>());
+            response.setResponseCode(ApiErrorEnum.INTERNAL_SERVER_ERROR.getKey());
+            response.setResponseMessage(ApiErrorEnum.INTERNAL_SERVER_ERROR.getDescription());
         }
-        System.out.println("Inicio:" + inicio + " | Termino: " +utilDate.getTime());
+        response.setSources(sourceList);
+        response.setStart_time(start);
+        end = timeProvider.getTimestampFormat();
+        response.setEnd_time(end);
 
-        return res;
+        System.out.println("Inicio:" + start + " | Termino: " + end);
+
+        return response;
     }
 
-    public boolean onlyExtract() throws Exception {
+
+    public Response extractResources(List<XmlLink> externalDiseaseLinkList) throws Exception {
+        Response response = new Response();
+        HashMap<String, Resource> resourceHashMap = null;
+
+        String start = timeProvider.getTimestampFormat();
+        String end = null;
+        Date version = timeProvider.getSqlDate();
+        try {
+            resourceHashMap = extractionWikipedia.extractResource(externalDiseaseLinkList);
+            if (resourceHashMap!=null) {
+                response.setResponseCode(StatusHttpEnum.OK.getClave());
+                response.setResponseMessage(StatusHttpEnum.OK.getDescripcion());
+            }else{
+                response.setResponseCode(ApiErrorEnum.RESOURCES_NOT_FOUND.getKey());
+                response.setResponseMessage(ApiErrorEnum.RESOURCES_NOT_FOUND.getDescription());
+            }
+        }catch (Exception e){
+            response.setResponseCode(ApiErrorEnum.INTERNAL_SERVER_ERROR.getKey());
+            response.setResponseMessage(ApiErrorEnum.INTERNAL_SERVER_ERROR.getDescription());
+        }
+        response.setResourceHashMap(resourceHashMap);
+        response.setStart_time(start);
+        end = timeProvider.getTimestampFormat();
+        response.setEnd_time(end);
+
+        System.out.println("Inicio:" + start + " | Termino: " + end);
+
+        return response;
+    }
+
+    public boolean extractionReport() throws Exception {
         boolean res = false;
-        String inicio = utilDate.getTime();
-        Date version = utilDate.getSqlDate();
-        populateDbNative.onlyExtract();
-        System.out.println("Inicio:" + inicio + " | Termino: " +utilDate.getTime());
+        String inicio = timeProvider.getTimestampFormat();
+        extractionWikipedia.extractionReport();
+        System.out.println("Inicio:" + inicio + " | Termino: " +timeProvider.getTimestampFormat());
 
         return res;
 
@@ -75,25 +127,14 @@ public class ExtractService {
     }
 
     public void checkCodes() throws Exception {
-        //extractionWikipedia.extract(null);
-        //extractionWikipedia.extractResource(null);
-
-        String inicio = utilDate.getTime();
-        Date version = utilDate.getSqlDate();
-        //List<XmlLink> externalDiseaseLinkList = populateDbNative.getDiseaseLinkListFromDBPedia(version);
-
-        //if (externalDiseaseLinkList!=null) {
-        populateDbNative.populateResource(null);
-        populateDbNative.populateSemanticTypes();
-        populateDbNative.populate(null, version);
-        //}else{
-        //    System.out.println("ERROR disease album");
-        //}
-        System.out.println("Inicio:" + inicio + " | Termino: " +utilDate.getTime());
-
+        String inicio = timeProvider.getTime();
+        extractionWikipedia.extract(null);
+        extractionWikipedia.extractResource(null);
+        System.out.println("Inicio:" + inicio + " | Termino: " +timeProvider.getTime());
     }
 
     public void checkLinks() throws Exception {
-        populateDbNative.checkWikiPages();
+        extractionWikipedia.checkWikiPages();
     }
+
 }

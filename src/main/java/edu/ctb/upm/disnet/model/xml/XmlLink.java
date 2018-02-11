@@ -1,5 +1,12 @@
 package edu.ctb.upm.disnet.model.xml;
 
+import edu.ctb.upm.disnet.constants.Constants;
+import org.hibernate.validator.constraints.URL;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.util.Objects;
 
 /**
@@ -15,6 +22,10 @@ public class XmlLink {
 
     private String consult;
     private Integer id;
+    @Valid
+    @NotNull(message = Constants.ERR_NO_PARAMETER)
+    @Size(min = 11, message = Constants.ERR_EMPTY_PARAMETER)
+    @URL
     private String url;
 
 
