@@ -1,6 +1,6 @@
-package edu.ctb.upm.disnet.model.extraction.code;
+package edu.ctb.upm.disnet.model.document_structure.code;
 
-import edu.ctb.upm.disnet.model.extraction.Link;
+import edu.ctb.upm.disnet.model.document_structure.Link;
 
 import java.util.Objects;
 

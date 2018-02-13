@@ -5,13 +5,12 @@ import edu.ctb.upm.disnet.component.ExtractionWikipedia;
 import edu.ctb.upm.disnet.enums.ApiErrorEnum;
 import edu.ctb.upm.disnet.enums.StatusHttpEnum;
 import edu.ctb.upm.disnet.model.Response;
-import edu.ctb.upm.disnet.model.extraction.Source;
-import edu.ctb.upm.disnet.model.extraction.code.Resource;
+import edu.ctb.upm.disnet.model.document_structure.Source;
+import edu.ctb.upm.disnet.model.document_structure.code.Resource;
 import edu.ctb.upm.disnet.model.xml.XmlLink;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -98,10 +97,10 @@ public class ExtractService {
         return response;
     }
 
-    public boolean extractionReport() throws Exception {
+    public boolean extractionReport(List<XmlLink> externalDiseaseLinkList) throws Exception {
         boolean res = false;
         String inicio = timeProvider.getTimestampFormat();
-        extractionWikipedia.extractionReport();
+        extractionWikipedia.extractionReport(externalDiseaseLinkList);
         System.out.println("Inicio:" + inicio + " | Termino: " +timeProvider.getTimestampFormat());
 
         return res;

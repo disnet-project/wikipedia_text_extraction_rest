@@ -1,7 +1,6 @@
 package edu.ctb.upm.disnet.component;
 
-import edu.ctb.upm.disnet.constants.Constants;
-import edu.ctb.upm.disnet.model.extraction.Connection_;
+import edu.ctb.upm.disnet.model.document_structure.Connection_;
 import edu.ctb.upm.disnet.enums.StatusHttpEnum;
 import edu.ctb.upm.disnet.common.util.Common;
 import org.jsoup.Connection;

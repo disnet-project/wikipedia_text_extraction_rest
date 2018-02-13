@@ -18,29 +18,6 @@ import java.util.List;
 @Component
 public class Constants {
 
-    @Value("${my.service.client.disease_album.name}")//OK_OK
-    public String DISNET_DIALIST_CLIENT_NAME;
-    @Value("${my.service.client.disease_album.url}")
-    public String SERVICE_DIALIST_URL;
-    @Value("${my.service.client.disease_album.path.last}")
-    public String SERVICE_DIALIST_PATH_LAST;
-    @Value("${my.service.client.disease_album.path.get}")
-    public String SERVICE_DIALIST_PATH_GET;
-
-    @Value("${my.service.dialist.name}")
-    public String SERVICE_DIALIST_NAME;
-    @Value("${my.service.dialist.code}")
-    public String SERVICE_DIALIST_CODE;
-    @Value("${my.service.metamap.name}")
-    public String SERVICE_METAMAP_NAME;
-    @Value("${my.service.metamap.code}")
-    public String SERVICE_METAMAP_CODE;
-    @Value("${my.service.tvp.name}")
-    public String SERVICE_TVP_NAME;
-    @Value("${my.service.tvp.code}")
-    public String SERVICE_TVP_CODE;
-
-
     public static final String HTTP_HEADER = "http://";
     public static final String HTTPS_HEADER = "https://";
     public static final String VERSION_PROJECT = "1.0";

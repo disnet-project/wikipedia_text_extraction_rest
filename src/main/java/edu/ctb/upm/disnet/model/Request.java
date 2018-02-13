@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
 
-public class RequestTextExtraction {
+public class Request {
 
     @Valid
     @NotNull(message = Constants.ERR_NO_PARAMETER)

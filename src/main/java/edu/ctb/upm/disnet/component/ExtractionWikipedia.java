@@ -5,10 +5,10 @@ import edu.ctb.upm.disnet.common.util.Common;
 import edu.ctb.upm.disnet.common.util.TimeProvider;
 import edu.ctb.upm.disnet.constants.Constants;
 import edu.ctb.upm.disnet.enums.StatusHttpEnum;
-import edu.ctb.upm.disnet.model.extraction.*;
-import edu.ctb.upm.disnet.model.extraction.code.Code;
-import edu.ctb.upm.disnet.model.extraction.code.Resource;
-import edu.ctb.upm.disnet.model.extraction.text.*;
+import edu.ctb.upm.disnet.model.document_structure.*;
+import edu.ctb.upm.disnet.model.document_structure.code.Code;
+import edu.ctb.upm.disnet.model.document_structure.code.Resource;
+import edu.ctb.upm.disnet.model.document_structure.text.*;
 import edu.ctb.upm.disnet.model.xml.XmlHighlight;
 import edu.ctb.upm.disnet.model.xml.XmlLink;
 import edu.ctb.upm.disnet.model.xml.XmlSection;
@@ -18,7 +18,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -353,7 +352,7 @@ public class ExtractionWikipedia {
 
             }//end que solo sea la fuente wikipedia
 
-            System.out.println("End to extraction...");
+            System.out.println("End to document_structure...");
         }//end for XmlSource source: sourcesList
 
         // Retorna la lista de fuentes, con sus documentos, enfermedades, secciones, códigos y textos...
@@ -709,6 +708,11 @@ public class ExtractionWikipedia {
     }
 
 
+    /**
+     * @param xmlSource
+     * @param tdElements
+     * @return
+     */
     public boolean existHorizontalInfobox(XmlSource xmlSource, Elements tdElements){
         //<<CAMBIO>> Se ha modificado el nombre del class "hlist" a "hlist hlist-separated"
         String findHorizontalList = getHighlightXmlByDescription(Constants.XML_HL_HORIZONTAL_LIST + "", xmlSource).getClass_();
@@ -881,6 +885,14 @@ public class ExtractionWikipedia {
     }
 
 
+    /**
+     * @param xmlSource
+     * @param tdElements
+     * @param countResource
+     * @param resourceMap
+     * @param countCode
+     * @param codeList
+     */
     public void getCodesAndResourceFromHorizontalList(XmlSource xmlSource, Elements tdElements, int countResource, Map<String, Resource> resourceMap, int countCode, List<Code> codeList){
         Resource resourceFather = new Resource();
         String resourceWithoutUrl = "";
@@ -958,14 +970,14 @@ public class ExtractionWikipedia {
      *
      * @throws Exception
      */
-    public void extractionReport() throws Exception {
+    public void extractionReport(List<XmlLink> externalDiseaseLinkList) throws Exception {
 
         List<Integer> countCharacteresList = new ArrayList<>();
 
         long time_start, time_end;
 
         time_start = System.currentTimeMillis();
-        List<Source> sourceList = extract(null);
+        List<Source> sourceList = extract(externalDiseaseLinkList);
         time_end = System.currentTimeMillis();
 
 

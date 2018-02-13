@@ -1,6 +1,6 @@
 package edu.ctb.upm.disnet.controller;
 
-import edu.ctb.upm.disnet.model.RequestTextExtraction;
+import edu.ctb.upm.disnet.model.Request;
 import edu.ctb.upm.disnet.model.Response;
 import edu.ctb.upm.disnet.service.ExtractService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,11 +30,11 @@ public class ExtractionController {
     @Autowired
     private ExtractService extractService;
 
-    //@RequestMapping(path = { "/texts" }, //wikipedia extraction
+    //@RequestMapping(path = { "/texts" }, //wikipedia document_structure
     //        method = RequestMethod.GET)
     @RequestMapping(path =  {  "${my.service.rest.request.mapping.texts.path}" },
             method = RequestMethod.POST)
-    public Response extract(@RequestBody @Valid RequestTextExtraction request, HttpServletRequest httpRequest, Device device) throws Exception {
+    public Response extract(@RequestBody @Valid Request request, HttpServletRequest httpRequest, Device device) throws Exception {
         return extractService.extract(request.getWikipediaLinks());
 /*
         String g ="http://en.wikipedia.org/wiki/Odonto–tricho–ungual–digital–palmar_syndrome";
@@ -70,19 +70,19 @@ public class ExtractionController {
 
     @RequestMapping(path =  {  "${my.service.rest.request.mapping.resources.path}" },
             method = RequestMethod.POST)
-    public Response extractResources(@RequestBody @Valid RequestTextExtraction request, HttpServletRequest httpRequest, Device device) throws Exception {
+    public Response extractResources(@RequestBody @Valid Request request, HttpServletRequest httpRequest, Device device) throws Exception {
         return extractService.extractResources(request.getWikipediaLinks());
     }
 
 
-    @RequestMapping(path = { "/check" }, //wikipedia extraction
+    @RequestMapping(path = { "/check" }, //wikipedia document_structure
             method = RequestMethod.GET)
     public void checkLinks() throws Exception {
         extractService.checkLinks();
     }
 
 
-    @RequestMapping(path = { "/codes" }, //wikipedia extraction
+    @RequestMapping(path = { "/codes" }, //wikipedia document_structure
             method = RequestMethod.GET)
     public void checkCodes() throws Exception {
         extractService.checkCodes();
@@ -90,8 +90,8 @@ public class ExtractionController {
 
     @RequestMapping(path =  {  "${my.service.rest.request.mapping.report.path}" },
             method = RequestMethod.GET)
-    public void extractionReport() throws Exception {
-        extractService.extractionReport();
+    public void extractionReport(@RequestBody @Valid Request request, HttpServletRequest httpRequest, Device device) throws Exception {
+        extractService.extractionReport(request.getWikipediaLinks());
     }
 
 

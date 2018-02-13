@@ -1,11 +1,9 @@
 package edu.ctb.upm.disnet.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import edu.ctb.upm.disnet.model.extraction.Source;
-import edu.ctb.upm.disnet.model.extraction.code.Resource;
+import edu.ctb.upm.disnet.model.document_structure.Source;
+import edu.ctb.upm.disnet.model.document_structure.code.Resource;
 
-import java.sql.Timestamp;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 

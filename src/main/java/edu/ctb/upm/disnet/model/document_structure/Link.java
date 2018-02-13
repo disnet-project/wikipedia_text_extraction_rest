@@ -1,4 +1,4 @@
-package edu.ctb.upm.disnet.model.extraction;
+package edu.ctb.upm.disnet.model.document_structure;
 
 import java.util.Objects;
 

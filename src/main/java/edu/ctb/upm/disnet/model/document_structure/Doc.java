@@ -1,7 +1,7 @@
-package edu.ctb.upm.disnet.model.extraction;
+package edu.ctb.upm.disnet.model.document_structure;
 
 
-import edu.ctb.upm.disnet.model.extraction.code.Code;
+import edu.ctb.upm.disnet.model.document_structure.code.Code;
 
 import java.util.Date;
 import java.util.List;
