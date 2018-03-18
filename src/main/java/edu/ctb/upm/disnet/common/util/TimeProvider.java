@@ -37,7 +37,7 @@ public class TimeProvider {
         return String.format(new java.util.Date().toString(), dtf);
     }
 
-    public String dateFormatyyyMMdd(java.util.Date date){
+    public String dateFormatyyyMMdd(String date){
         return new SimpleDateFormat("yyyy-MM-dd").format(date);
     }
 

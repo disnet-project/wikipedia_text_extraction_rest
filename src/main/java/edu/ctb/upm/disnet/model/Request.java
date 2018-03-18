@@ -14,6 +14,8 @@ public class Request {
     @NotNull(message = Constants.ERR_NO_PARAMETER)
     @Size(min = 1, message = Constants.ERR_EMPTY_PARAMETER)
     private List<XmlLink> wikipediaLinks;
+    private boolean json;
+
 
     public List<XmlLink> getWikipediaLinks() {
         return wikipediaLinks;
@@ -21,5 +23,13 @@ public class Request {
 
     public void setWikipediaLinks(List<XmlLink> wikipediaLinks) {
         this.wikipediaLinks = wikipediaLinks;
+    }
+
+    public boolean isJson() {
+        return json;
+    }
+
+    public void setJson(boolean json) {
+        this.json = json;
     }
 }

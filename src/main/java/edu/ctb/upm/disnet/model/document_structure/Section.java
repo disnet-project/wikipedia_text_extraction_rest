@@ -20,6 +20,7 @@ public class Section {
     private String name;
     private String description;
 
+    private Integer textCount;
     private List<Text> textList;
 
 
@@ -46,6 +47,14 @@ public class Section {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Integer getTextCount() {
+        return textCount;
+    }
+
+    public void setTextCount(Integer textCount) {
+        this.textCount = textCount;
     }
 
     public List<Text> getTextList() {

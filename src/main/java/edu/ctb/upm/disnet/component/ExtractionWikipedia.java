@@ -97,7 +97,7 @@ public class ExtractionWikipedia {
         Boolean isSection;
         Boolean isText;
 
-        Date version = date.getSqlDate();
+        String version = date.getNowFormatyyyyMMdd();
         //</editor-fold>
 
         System.out.println("Preparing model...");
@@ -343,7 +343,7 @@ public class ExtractionWikipedia {
                     }//end else if oConnect.connection_().equals("OK")
 
                     // Relaciona (agrega) la lista de documentos a la fuente "Source"
-                    source.setDocList(docList);
+                    source.setDocuments(docList);
                     countDoc++;
                 }//end for String link: source.getLinkList()
 
@@ -988,7 +988,7 @@ public class ExtractionWikipedia {
             System.out.println("\n");
             System.out.println("-------------------- SOURCE(" + source.getId() + "_" + source.getName() + ") --------------------");
 
-            for (Doc document: source.getDocList()) {
+            for (Doc document: source.getDocuments()) {
 
                 System.out.println("Document(" + document.getId() + "_" + document.getDate() + ") => " + document.getUrl().getUrl());
                 System.out.println("    Disease(" + document.getDisease().getId() + "_" + document.getDisease().getName() + ") ");

@@ -1,6 +1,8 @@
 package edu.ctb.upm.disnet.controller;
 
+import edu.ctb.upm.disnet.constants.Constants;
 import edu.ctb.upm.disnet.model.Request;
+import edu.ctb.upm.disnet.model.RequestJSON;
 import edu.ctb.upm.disnet.model.Response;
 import edu.ctb.upm.disnet.service.ExtractService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +37,7 @@ public class ExtractionController {
     @RequestMapping(path =  {  "${my.service.rest.request.mapping.texts.path}" },
             method = RequestMethod.POST)
     public Response extract(@RequestBody @Valid Request request, HttpServletRequest httpRequest, Device device) throws Exception {
-        return extractService.extract(request.getWikipediaLinks());
+        return extractService.extract(request);
 /*
         String g ="http://en.wikipedia.org/wiki/Odonto–tricho–ungual–digital–palmar_syndrome";
         String m = "http://en.wikipedia.org/wiki/Bannayan–Riley–Ruvalcaba_syndrome";
@@ -67,11 +69,23 @@ public class ExtractionController {
 
     }
 
+    @RequestMapping(path =  {  "${my.service.rest.request.mapping.texts.json.path}" },
+            method = RequestMethod.POST)
+    public Response extractJSON(@RequestBody @Valid RequestJSON request, HttpServletRequest httpRequest, Device device) throws Exception {
+        return extractService.extractJSON(request, Constants.TEXTS);
+    }
+
 
     @RequestMapping(path =  {  "${my.service.rest.request.mapping.resources.path}" },
             method = RequestMethod.POST)
     public Response extractResources(@RequestBody @Valid Request request, HttpServletRequest httpRequest, Device device) throws Exception {
-        return extractService.extractResources(request.getWikipediaLinks());
+        return extractService.extractResources(request);
+    }
+
+    @RequestMapping(path =  {  "${my.service.rest.request.mapping.resources.json.path}" },
+            method = RequestMethod.POST)
+    public Response extractResourcesJSON(@RequestBody @Valid RequestJSON request, HttpServletRequest httpRequest, Device device) throws Exception {
+        return extractService.extractJSON(request, Constants.RESOURCES);
     }
 
 
