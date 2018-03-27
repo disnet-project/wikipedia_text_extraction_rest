@@ -7,6 +7,7 @@ import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -26,6 +27,9 @@ public class ConnectDocument {
 
     @Autowired
     private Common common;
+
+    @Value(value = "${my.service.rest.timeout.jsoup}")
+    public Integer JSOUP_TIMEOUT;
 
     /**
      * Con esta método compruebo el Status code de la respuesta que recibo al hacer la petición
@@ -49,7 +53,7 @@ public class ConnectDocument {
             String link_ = "";
             if (connection_.getLink().contains("http://")) link_ = connection_.getLink().replace("http", "https");
             else if (connection_.getLink().contains("https://")) link_ = connection_.getLink();
-            Connection connection = Jsoup.connect(link_).userAgent("Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:25.0) Gecko/20100101 Firefox/25.0").referrer("http://www.google.com").timeout(20 * 1000);;
+            Connection connection = Jsoup.connect(link_).userAgent("Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:25.0) Gecko/20100101 Firefox/25.0").referrer("http://www.google.com").timeout(JSOUP_TIMEOUT*1000);
             // Connection connection = Jsoup.connect( connection_.getLink().replace("http", "https") )
             //oResponse = connection.execute(); || Jsoup.connect(Constants.HTTP_HEADER + connection_.getLink()
             connection_.setoDoc( connection.get()/*getHtmlDocument(connection)*/ );
@@ -79,7 +83,7 @@ public class ConnectDocument {
             String link_ = "";
             if (connection_.getLink().contains("http://")) link_ = convertLink.replace("http", "https");
             else if (convertLink.contains("https://")) link_ = connection_.getLink();
-            Connection connection = Jsoup.connect( link_ ).userAgent("Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:25.0) Gecko/20100101 Firefox/25.0").referrer("http://www.google.com").timeout(20*1000);
+            Connection connection = Jsoup.connect( link_ ).userAgent("Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:25.0) Gecko/20100101 Firefox/25.0").referrer("http://www.google.com").timeout(JSOUP_TIMEOUT*1000);
             // Connection connection = Jsoup.connect( connection_.getLink().replace("http", "https") )
             //oResponse = connection.execute(); || Jsoup.connect(Constants.HTTP_HEADER + connection_.getLink()
             connection_.setoDoc( connection.get()/*getHtmlDocument(connection)*/ );
