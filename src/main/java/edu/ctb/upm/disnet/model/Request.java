@@ -14,6 +14,7 @@ public class Request {
     @NotNull(message = Constants.ERR_NO_PARAMETER)
     @Size(min = 1, message = Constants.ERR_EMPTY_PARAMETER)
     private List<XmlLink> wikipediaLinks;
+    private String snapshot;
     private boolean json;
 
 
@@ -23,6 +24,14 @@ public class Request {
 
     public void setWikipediaLinks(List<XmlLink> wikipediaLinks) {
         this.wikipediaLinks = wikipediaLinks;
+    }
+
+    public String getSnapshot() {
+        return snapshot;
+    }
+
+    public void setSnapshot(String snapshot) {
+        this.snapshot = snapshot;
     }
 
     public boolean isJson() {

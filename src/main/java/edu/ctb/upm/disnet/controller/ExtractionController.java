@@ -105,7 +105,7 @@ public class ExtractionController {
     @RequestMapping(path =  {  "${my.service.rest.request.mapping.report.path}" },
             method = RequestMethod.GET)
     public void extractionReport(@RequestBody @Valid Request request, HttpServletRequest httpRequest, Device device) throws Exception {
-        extractService.extractionReport(request.getWikipediaLinks());
+        extractService.extractionReport(request);
     }
 
 

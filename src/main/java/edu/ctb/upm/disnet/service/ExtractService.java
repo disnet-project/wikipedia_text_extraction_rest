@@ -52,7 +52,7 @@ public class ExtractService {
         String end = null;
         String version = timeProvider.getNowFormatyyyyMMdd();
         try {
-            sourceList = extractionWikipedia.extract(request.getWikipediaLinks());
+            sourceList = extractionWikipedia.extract(request.getWikipediaLinks(), request.getSnapshot());
             if (sourceList!=null) {
                 response.setResponseCode(StatusHttpEnum.OK.getClave());
                 response.setResponseMessage(StatusHttpEnum.OK.getDescripcion());
@@ -74,10 +74,10 @@ public class ExtractService {
             try {
                 logger.info("Saving initiated Wikipedia texts");
                 Gson gson = new GsonBuilder().setPrettyPrinting().create();
-                writeJSONFile(gson.toJson(response), timeProvider.dateFormatyyyMMdd(version), Constants.RETRIEVAL_FILE_NAME);
+                writeJSONFile(gson.toJson(response), version /*timeProvider.dateFormatyyyMMdd(version)*/, Constants.RETRIEVAL_FILE_NAME);
                 logger.info("Saving of finished Wikipedia texts");
             } catch (Exception e) {
-                logger.error("Error while save json {} ", timeProvider.dateFormatyyyMMdd(version) + Constants.RETRIEVAL_FILE_NAME + Constants.DOT_JSON);
+                logger.error("Error while save json {} ", version /*timeProvider.dateFormatyyyMMdd(version)*/ + Constants.RETRIEVAL_FILE_NAME + Constants.DOT_JSON);
             }
         }
 
@@ -121,7 +121,8 @@ public class ExtractService {
 
         String start = timeProvider.getTimestampFormat();
         String end = null;
-        String version = timeProvider.getNowFormatyyyyMMdd();
+        //String version = timeProvider.getNowFormatyyyyMMdd();
+        String version = request.getSnapshot();
         try {
             resourceHashMap = extractionWikipedia.extractResource(request.getWikipediaLinks());
             if (resourceHashMap!=null) {
@@ -144,10 +145,10 @@ public class ExtractService {
             try {
                 logger.info("Saving initiated Wikipedia resources");
                 Gson gson = new GsonBuilder().setPrettyPrinting().create();
-                writeJSONFile(gson.toJson(response), timeProvider.dateFormatyyyMMdd(version), Constants.RETRIEVAL_RESOURCES_FILE_NAME);
+                writeJSONFile(gson.toJson(response), version /*timeProvider.dateFormatyyyMMdd(version)*/, Constants.RETRIEVAL_RESOURCES_FILE_NAME);
                 logger.info("Saving of finished Wikipedia resources");
             } catch (Exception e) {
-                logger.error("Error while save json {} ", timeProvider.dateFormatyyyMMdd(version) + Constants.RETRIEVAL_RESOURCES_FILE_NAME + Constants.DOT_JSON);
+                logger.error("Error while save json {} ", version /*timeProvider.dateFormatyyyMMdd(version)*/ + Constants.RETRIEVAL_RESOURCES_FILE_NAME + Constants.DOT_JSON);
             }
         }
 
@@ -157,10 +158,10 @@ public class ExtractService {
     }
 
 
-    public boolean extractionReport(List<XmlLink> externalDiseaseLinkList) throws Exception {
+    public boolean extractionReport(Request request) throws Exception {
         boolean res = false;
         String inicio = timeProvider.getTimestampFormat();
-        extractionWikipedia.extractionReport(externalDiseaseLinkList);
+        extractionWikipedia.extractionReport(request.getWikipediaLinks(), request.getSnapshot());
         System.out.println("Inicio:" + inicio + " | Termino: " +timeProvider.getTimestampFormat());
 
         return res;
@@ -188,7 +189,7 @@ public class ExtractService {
 
     public void checkCodes() throws Exception {
         String inicio = timeProvider.getTime();
-        extractionWikipedia.extract(null);
+        extractionWikipedia.extract(null, "");
         extractionWikipedia.extractResource(null);
         System.out.println("Inicio:" + inicio + " | Termino: " +timeProvider.getTime());
     }

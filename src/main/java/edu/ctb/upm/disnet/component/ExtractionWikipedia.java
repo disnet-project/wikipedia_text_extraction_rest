@@ -68,7 +68,7 @@ public class ExtractionWikipedia {
      * @return lista de fuentes de información "Source". Para ser insertados en la BD.
      * @throws Exception
      */
-    public List<Source> extract(List<XmlLink> externalDiseaseLinkList) throws Exception {
+    public List<Source> extract(List<XmlLink> externalDiseaseLinkList, String version) throws Exception {
 
         //<editor-fold desc="VARIABLES DE INICO">
         Connection_ connection_;
@@ -97,7 +97,7 @@ public class ExtractionWikipedia {
         Boolean isSection;
         Boolean isText;
 
-        String version = date.getNowFormatyyyyMMdd();
+        //String version = date.getNowFormatyyyyMMdd();
         //</editor-fold>
 
         System.out.println("Preparing model...");
@@ -970,14 +970,14 @@ public class ExtractionWikipedia {
      *
      * @throws Exception
      */
-    public void extractionReport(List<XmlLink> externalDiseaseLinkList) throws Exception {
+    public void extractionReport(List<XmlLink> externalDiseaseLinkList, String version) throws Exception {
 
         List<Integer> countCharacteresList = new ArrayList<>();
 
         long time_start, time_end;
 
         time_start = System.currentTimeMillis();
-        List<Source> sourceList = extract(externalDiseaseLinkList);
+        List<Source> sourceList = extract(externalDiseaseLinkList, version);
         time_end = System.currentTimeMillis();
 
 
