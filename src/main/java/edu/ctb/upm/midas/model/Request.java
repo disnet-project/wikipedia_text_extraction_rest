@@ -17,6 +17,14 @@ public class Request {
     private String snapshot;
     private boolean json;
 
+    public Request() {
+    }
+
+    public Request(List<XmlLink> wikipediaLinks, String snapshot, boolean json) {
+        this.wikipediaLinks = wikipediaLinks;
+        this.snapshot = snapshot;
+        this.json = json;
+    }
 
     public List<XmlLink> getWikipediaLinks() {
         return wikipediaLinks;

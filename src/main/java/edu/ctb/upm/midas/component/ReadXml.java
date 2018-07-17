@@ -7,7 +7,6 @@ import edu.ctb.upm.midas.model.xml.XmlLink;
 import edu.ctb.upm.midas.model.xml.XmlSection;
 import edu.ctb.upm.midas.model.xml.XmlSource;
 
-import edu.ctb.upm.disnet.model.xml.title.*;
 import edu.ctb.upm.midas.model.xml.title.*;
 import org.jdom2.Document;
 import org.jdom2.Element;

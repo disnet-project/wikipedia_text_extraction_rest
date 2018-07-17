@@ -5,15 +5,15 @@ import edu.ctb.upm.midas.model.Request;
 import edu.ctb.upm.midas.model.RequestJSON;
 import edu.ctb.upm.midas.model.Response;
 import edu.ctb.upm.midas.service.ExtractService;
+import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mobile.device.Device;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 /**
  * Created by gerardo on 05/07/2017.
@@ -103,10 +103,17 @@ public class ExtractionController {
     }
 
     @RequestMapping(path =  {  "${my.service.rest.request.mapping.report.path}" },
-            method = RequestMethod.GET)
-    public void extractionReport(@RequestBody @Valid Request request, HttpServletRequest httpRequest, Device device) throws Exception {
+            method = RequestMethod.GET,
+            params = {"snapshot", "json"})
+    public void extractionReport(
+            @RequestParam(value = "snapshot") @Valid @NotBlank @NotNull @NotEmpty String snapshot,
+            @RequestParam(value = "json") @Valid @NotBlank @NotNull @NotEmpty boolean json,
+            HttpServletRequest httpRequest, Device device) throws Exception {
+        Request request = new Request(null, snapshot, json);
         extractService.extractionReport(request);
     }
+
+
 
 
 }
