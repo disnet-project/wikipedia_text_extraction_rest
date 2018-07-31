@@ -5,11 +5,11 @@
 //import edu.ctb.upm.midas.common.util.TimeProvider;
 //import edu.ctb.upm.midas.constants.Constants;
 //import edu.ctb.upm.midas.enums.StatusHttpEnum;
-//import edu.ctb.upm.disnet.model.document_structure.*;
+//import edu.ctb.upm.midas.model.document_structure.*;
 //import edu.ctb.upm.midas.model.document_structure.*;
 //import edu.ctb.upm.midas.model.document_structure.code.Code;
 //import edu.ctb.upm.midas.model.document_structure.code.Resource;
-//import edu.ctb.upm.disnet.model.document_structure.text.*;
+//import edu.ctb.upm.midas.model.document_structure.text.*;
 //import edu.ctb.upm.midas.model.document_structure.text.*;
 //import edu.ctb.upm.midas.model.xml.XmlHighlight;
 //import edu.ctb.upm.midas.model.xml.XmlLink;

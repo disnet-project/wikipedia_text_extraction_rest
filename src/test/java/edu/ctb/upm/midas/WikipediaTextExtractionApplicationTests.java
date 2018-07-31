@@ -1,4 +1,4 @@
-package edu.ctb.upm.disnet;
+package edu.ctb.upm.midas;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
