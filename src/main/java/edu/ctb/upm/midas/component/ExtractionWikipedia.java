@@ -481,6 +481,8 @@ public class ExtractionWikipedia {
         HashMap<String, Resource> resourceMap = new HashMap<>();
         List<Code> codeList = new ArrayList<>();
         //</editor-fold>
+
+        //Se carga el XML de configuración y se verifica que no este vacío
         XmlSource xmlSource = loadSource.loadSource();
         if (xmlSource!=null) {
             // VALIDAR QUE SOLO SE RECUPERE INFORMACIÓN DE WIKIPEDIA
@@ -510,23 +512,18 @@ public class ExtractionWikipedia {
                         String idElementName = getHighlightXmlByDescription(Constants.XML_HL_DISEASENAME, xmlSource).getId();
                         String diseaseName = oDoc.getElementById( idElementName ).text();
                         //                    System.out.println("Disease: " + oDoc.getElementById( idElementName ).text() );
-
-
                         /*
                             Se obtiene el elemento (tabla) con clase "infobox" NOTA. infobox es un elemento Highlight
                             del documento source.xml
-                            IMPORTANTE. La siguiente rutina sirve para los infobox que se encuentran en el pie
-                            del documento wikipedia. Es necesario otro para el infobox ubicado al principio.
+                            IMPORTANTE. La siguiente rutina sirve para los infobox que se encuentran en el principio
+                             y en el pie del documento.
                          */
-
-                        // Se arma la consulta para buscar el elemento  */
+                        // Se arma la consulta para buscar el elemento infobox  */
                         String query = getHighlightXmlByDescription( Constants.XML_HL_INFOBOX, xmlSource).getClass_();
                         // Se ejecuta la consulta
                         Elements infoboxElements = oDoc.select( consultTabByClass( query ) );
-
                         int countCode = 0;
-                        for (Element infobox:
-                                infoboxElements) {
+                        for (Element infobox: infoboxElements) {
 
                             String infoboxSection = "";
                             boolean hasValidSection = false;
@@ -543,9 +540,7 @@ public class ExtractionWikipedia {
                                 Elements liElements_ = row.select(Constants.HTML_LI);
                                 Elements divElements = row.select(Constants.HTML_DIV);
 
-                                //<editor-fold desc="PROCESO PARA EL INFOBOX EN EL PRINCIPIO DEL DOCUMENTO">
-
-                                //<editor-fold desc="VALIDACIONES">
+                                //<editor-fold desc="PROCESO DE VERIFICACION DE TIPO DE INFOBOX">
                                 // Se obtienen los elementos <a> que tengan class: external text
                                 // No se pueden leer los códigos que no tengan algun enlace (ver:ICD-10 en.wikipedia.org/wiki/Factor_V_Leiden )
                                 String findExternalText = getHighlightXmlByDescription(Constants.XML_HL_EXTERNAL_TEXT + "", xmlSource).getClass_();
@@ -589,7 +584,7 @@ public class ExtractionWikipedia {
                                     validLiElement = hasPlainList || hasDivPlainList;
                                 }
                                 //</editor-fold>
-
+                                //<editor-fold desc="PROCESO PARA EL INFOBOX EN EL PRINCIPIO DEL DOCUMENTO">
                                 /** Se valida: 1) que en la fila se encuente un elemento con class: external text,
                                  * 2) que no tenga elementos <li>, 3) que no tenga colspan (que no se una sola columna) */
                                 //                            System.out.println(thElements.text() + " => hasExternalText: " + hasExternalText + " && validLiElement: " + validLiElement + " && hasValidSection("+infoboxSection+"):" + hasValidSection + " && !thElements.hasAttr(Constants.HTML_COLSPAN): " + !thElements.hasAttr(Constants.HTML_COLSPAN));
@@ -599,8 +594,7 @@ public class ExtractionWikipedia {
                                     //<editor-fold desc="OBTERNER FUENTES EXTERNAS PARA UNA ENFERMEDAD">
                                     //resource = null;
                                     resource = new Resource();
-                                    for (Element thElement:
-                                            thElements) {
+                                    for (Element thElement: thElements) {
                                         List<String> linkList = new ArrayList<>();
                                     /* Obtener los "resources" y sus enlaces (vocabularios, bases online libres o servicios) */
                                         //                                    System.out.println( "    Resource(HTML_A): " + thElements.text() );
@@ -618,7 +612,7 @@ public class ExtractionWikipedia {
 
                                     }//</editor-fold>
 
-                                /* Dentro deL infobox <table> se analiza sus elementos <td> */
+                                    /* Dentro deL infobox <table> se analiza sus elementos <td> */
                                     //<editor-fold desc="OBTERNER CÓDIGOS DE LAS FUENTES EXTERNAS">
                                     for (Element tdElement:
                                             tdElements) {
@@ -644,10 +638,9 @@ public class ExtractionWikipedia {
                                         }
                                     }//</editor-fold>
                                 }//</editor-fold>
-                                //System.out.println("    QUE PASA " );
 
                                 //<editor-fold desc="PROCESO PARA EL INFOBOX EN EL PIE DEL DOCUMENTO">
-                            /* Dentro de una fila <tr> se recorren los elementos <td> */
+                                /* Dentro de una fila <tr> se recorren los elementos <td> */
                                 if(hasHorizontalList) {//System.out.println("    ENTRA " );
                                     Resource resourceFather = new Resource();
                                     for (Element tdElement : tdElements) {
@@ -660,13 +653,12 @@ public class ExtractionWikipedia {
                                             Elements bElements = liElements.get(i).getElementsByTag(Constants.HTML_B);
                                             resource = new Resource();
                                             List<String> linkList = new ArrayList<>();
-                                            for (Element b :
-                                                    bElements) {
-                                                Elements aElements = bElements.select(Constants.HTML_A);
+                                            for (Element b : bElements) {
+                                                Elements aElements = b.select(Constants.HTML_A);
                                                 /** Condición para eliminar los resources no válidos (aquellos que no contiene
                                                  *  un enlace de cualquier tipo * no es lo mejor) */
                                                 if (aElements.size() > 0) {
-
+//                                                    System.out.println(b.text() + " - " + b.html());
                                                     //System.out.println("    Resource(HTML_B): " + b.text());
                                         /* Se obtienen los enlaces de un "resource"*/
                                                     Elements links = b.getElementsByTag(Constants.HTML_A + "");
@@ -744,6 +736,14 @@ public class ExtractionWikipedia {
     }
 
 
+    /**
+     * Método que verifica que un elemento <table> contenga un elemento con class "hlist"
+     *
+     *
+     * @param xmlSource
+     * @param tdElements
+     * @return true si encuentra un elemento con class "hlist"
+     */
     public boolean existHorizontalInfobox(XmlSource xmlSource, Elements tdElements){
         //<<CAMBIO>> Se ha modificado el nombre del class "hlist" a "hlist hlist-separated"
         String findHorizontalList = getHighlightXmlByDescription(Constants.XML_HL_HORIZONTAL_LIST + "", xmlSource).getClass_();
@@ -874,8 +874,7 @@ public class ExtractionWikipedia {
 
                             /* Dentro deL infobox <table> se analiza sus elementos <td> */
                     //<editor-fold desc="OBTERNER CÓDIGOS DE LAS FUENTES EXTERNAS">
-                    for (Element tdElement:
-                            tdElements) {
+                    for (Element tdElement: tdElements) {
                                 /* Obtener los códigos de los vocabularios, bases online libres o servicios
                                  * Se obtienen los elementos <a> con class="external text" y su atributo href */
                         String class_ = getHighlightXmlByDescription(Constants.XML_HL_EXTERNAL_TEXT + "", xmlSource).getClass_();
@@ -931,7 +930,7 @@ public class ExtractionWikipedia {
                 List<String> linkList = new ArrayList<>();
                 for (Element b : bElements) {
                     resourceWithoutUrl = b.text().trim();
-                    Elements aElements = bElements.select(Constants.HTML_A);
+                    Elements aElements = b.select(Constants.HTML_A);
                     /** Condición para eliminar los resources no válidos (aquellos que no contiene
                      *  un enlace de cualquier tipo * no es lo mejor) */
                     if (aElements.size() > 0) {
@@ -1160,14 +1159,16 @@ public class ExtractionWikipedia {
 
         if (!common.isEmpty(head) && !common.isEmpty(body)){
             table = new Table();
-            List<Tr> trList = new ArrayList<>();;
+            List<String> trList = new ArrayList<>();;
             table.setId( countText );
             table.setTextOrder( countText );
             table.setTitle(title);//System.out.println("Wikitable: " + title);
-            Tr oTr_head = new Tr(head + " headingBody ");
-            Tr oTr_body = new Tr(body);
-            trList.add(oTr_head);
-            trList.add(oTr_body);
+//            Tr oTr_head = new Tr(head + " headingBody ");
+//            Tr oTr_body = new Tr(body);
+            String head_ = head + " headingBody ";
+            String body_ = body;
+            trList.add(head_);
+            trList.add(body_);
             table.setTrList(trList);
             //System.out.println("th: " + head);
             //System.out.println("td: " + body);
