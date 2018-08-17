@@ -10,6 +10,7 @@ import edu.ctb.upm.midas.enums.StatusHttpEnum;
 import edu.ctb.upm.midas.model.Request;
 import edu.ctb.upm.midas.model.RequestJSON;
 import edu.ctb.upm.midas.model.Response;
+import edu.ctb.upm.midas.model.ResponseJSON;
 import edu.ctb.upm.midas.model.document_structure.Source;
 import edu.ctb.upm.midas.model.document_structure.code.Resource;
 import org.slf4j.Logger;
@@ -52,6 +53,7 @@ public class ExtractService {
         String snapshot = timeProvider.getNowFormatyyyyMMdd();
 
         response.setSources(sourceList);
+        System.out.println(snapshot + " == " + request.getSnapshot());
         if (snapshot.equals(request.getSnapshot())) {
             try {
                 sourceList = extractionWikipedia.extract(request.getWikipediaLinks(), request.getSnapshot());
@@ -93,17 +95,20 @@ public class ExtractService {
     }
 
 
-    public Response extractJSON(RequestJSON request, String extractionType) throws Exception {
-        Response response = new Response();
+    public ResponseJSON extractJSON(RequestJSON request, String extractionType) throws Exception {
+        ResponseJSON response = new ResponseJSON();
 
         String start = timeProvider.getTimestampFormat();
         String end = null;
+        Gson gson = new Gson();
+        gson = new GsonBuilder().setPrettyPrinting().create();
         try {
             if (extractionType.equals(Constants.TEXTS)) {//System.out.println("entra texts: " + request.getSnapshot());
                 response = readWikipediaRetrievalJSON(request.getSnapshot(), Constants.RETRIEVAL_FILE_NAME);
             }else{
                 response = readWikipediaRetrievalJSON(request.getSnapshot(), Constants.RETRIEVAL_RESOURCES_FILE_NAME);
             }
+//            System.out.println(gson.toJson(response));
         }catch (Exception e){
             response.setSources(new ArrayList<>());
             response.setResponseCode(ApiErrorEnum.INTERNAL_SERVER_ERROR.getKey());
@@ -195,7 +200,8 @@ public class ExtractService {
 
     public void checkCodes() throws Exception {
         String inicio = timeProvider.getTime();
-        extractionWikipedia.extract(null, "");
+        extractionWikipedia.extractionReport(null, "");
+//        extractionWikipedia.extract(null, "");
         extractionWikipedia.extractResource(null);
         System.out.println("Inicio:" + inicio + " | Termino: " +timeProvider.getTime());
     }
@@ -232,8 +238,8 @@ public class ExtractService {
      * @return
      * @throws Exception
      */
-    public Response readWikipediaRetrievalJSON(String version, String file_name) throws Exception {
-        Response response = null;
+    public ResponseJSON readWikipediaRetrievalJSON(String version, String file_name) throws Exception {
+        ResponseJSON response = null;
         System.out.println("Read JSON!... ");
         Gson gson = new Gson();
         String fileName = version + file_name + Constants.DOT_JSON;
@@ -241,7 +247,7 @@ public class ExtractService {
 
         try {
             BufferedReader br = new BufferedReader(new FileReader(path));
-            response = gson.fromJson(br, Response.class);
+            response = gson.fromJson(br, ResponseJSON.class);
         }catch (Exception e){
             System.out.println("Error to read or convert JSON!..." + e.getLocalizedMessage() + e.getMessage() + e.getCause());
         }

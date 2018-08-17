@@ -4,6 +4,7 @@ import edu.ctb.upm.midas.constants.Constants;
 import edu.ctb.upm.midas.model.Request;
 import edu.ctb.upm.midas.model.RequestJSON;
 import edu.ctb.upm.midas.model.Response;
+import edu.ctb.upm.midas.model.ResponseJSON;
 import edu.ctb.upm.midas.service.ExtractService;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -42,7 +43,7 @@ public class ExtractionController {
 
     @RequestMapping(path =  {  "${my.service.rest.request.mapping.texts.json.path}" },
             method = RequestMethod.POST)
-    public Response extractJSON(@RequestBody @Valid RequestJSON request, HttpServletRequest httpRequest, Device device) throws Exception {
+    public ResponseJSON extractJSON(@RequestBody @Valid RequestJSON request, HttpServletRequest httpRequest, Device device) throws Exception {
         return extractService.extractJSON(request, Constants.TEXTS);
     }
 
@@ -55,7 +56,7 @@ public class ExtractionController {
 
     @RequestMapping(path =  {  "${my.service.rest.request.mapping.resources.json.path}" },
             method = RequestMethod.POST)
-    public Response extractResourcesJSON(@RequestBody @Valid RequestJSON request, HttpServletRequest httpRequest, Device device) throws Exception {
+    public ResponseJSON extractResourcesJSON(@RequestBody @Valid RequestJSON request, HttpServletRequest httpRequest, Device device) throws Exception {
         return extractService.extractJSON(request, Constants.RESOURCES);
     }
 

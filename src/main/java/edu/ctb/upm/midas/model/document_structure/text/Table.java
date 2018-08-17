@@ -13,14 +13,24 @@ import java.util.List;
  */
 public class Table extends Text {
 
-    private List<Tr> trList;
+    private List<String> trList;
 
-
-    public List<Tr> getTrList() {
+    public List<String> getTrList() {
         return trList;
     }
 
-    public void setTrList(List<Tr> trList) {
+    public void setTrList(List<String> trList) {
         this.trList = trList;
     }
+
+    //    private List<Tr> trList;
+//
+//
+//    public List<Tr> getTrList() {
+//        return trList;
+//    }
+//
+//    public void setTrList(List<Tr> trList) {
+//        this.trList = trList;
+//    }
 }
