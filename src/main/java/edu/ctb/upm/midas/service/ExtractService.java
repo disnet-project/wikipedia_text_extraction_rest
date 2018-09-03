@@ -132,8 +132,8 @@ public class ExtractService {
 
         String start = timeProvider.getTimestampFormat();
         String end = null;
-        //String version = timeProvider.getNowFormatyyyyMMdd();
-        String version = request.getSnapshot();
+        String version = timeProvider.getNowFormatyyyyMMdd();
+//        String version = request.getSnapshot();
         try {
             resourceHashMap = extractionWikipedia.extractResource(request.getWikipediaLinks());
             if (resourceHashMap!=null) {
@@ -220,6 +220,7 @@ public class ExtractService {
     public void writeJSONFile(String jsonBody, String version, String file_name) throws IOException {
         String fileName = version + file_name + Constants.DOT_JSON;
         String path = Constants.RETRIEVAL_HISTORY_FOLDER + fileName;
+        System.out.println(path);
         InputStream in = getClass().getResourceAsStream(path);
         //BufferedReader bL = new BufferedReader(new InputStreamReader(in));
         File file = new File(path);
