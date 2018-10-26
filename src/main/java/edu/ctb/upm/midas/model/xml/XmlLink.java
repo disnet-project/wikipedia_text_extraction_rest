@@ -26,6 +26,8 @@ public class XmlLink {
     @Size(min = 11, message = Constants.ERR_EMPTY_PARAMETER)
     @URL
     private String url;
+    //Es para controlar los enlaces que definitivamente no se les hara minado de texto
+    private boolean relevant;
 
 
     public String getConsult() {
@@ -50,6 +52,14 @@ public class XmlLink {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public boolean isRelevant() {
+        return relevant;
+    }
+
+    public void setRelevant(boolean relevant) {
+        this.relevant = relevant;
     }
 
     @Override

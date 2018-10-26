@@ -160,194 +160,198 @@ public class ExtractionWikipedia {
                 }
                 //</editor-fold>
                 for (XmlLink xmlLink : xmlSource.getLinkList()) {
-                    // Se conecta con el documento wikipedia por medio de su enlace
-                    connection_ = connectDocument.connect(xmlLink.getUrl());
-                    // Se crea un nuevo documento (Doc), url (Link) y enfermedad (Disease)
-                    doc = new Doc();
-                    url = new Link();
-                    disease = new Disease();
-                    // Se verifica si hubo conexión con el documento (enlace Web)
-                    // Se pinta en pantalla el status OK (esta disponible el enlace)
-                    System.out.println(countDoc + " wikipediaExtract " + xmlLink.getUrl() + " ==> " + connection_.getStatus() + "("+connection_.getStatusCode()+")");
-                    if (connection_.getStatus().equals(StatusHttpEnum.OK.getDescripcion()) && connection_.getoDoc() != null) {
-                        // Se obtiene el documento HTML (página wikipedia)
-                        //<editor-fold desc="DOCUMENTOS">
-                        document = connection_.getoDoc();
-                        // Se obtiene el elemento HTML que almacena el nombre de la enfermedad
-                        String idElementName = getHighlightXmlByDescription(
-                                Constants.XML_HL_DISEASENAME, xmlSource).getId();
-                        // Se inicia a introducir información de un documento
-                        doc.setId(countDoc);
-                        doc.setDate(snapshot);
+                    //Verifica que el enlace Web sea relevante, si no lo es, ni siquiera se conectará
+//                    if (xmlLink.isRelevant()==false) System.out.println(xmlLink.getUrl());
+                    if (xmlLink.isRelevant()) {
+                        // Se conecta con el documento wikipedia por medio de su enlace
+                        connection_ = connectDocument.connect(xmlLink.getUrl());
+                        // Se crea un nuevo documento (Doc), url (Link) y enfermedad (Disease)
+                        doc = new Doc();
+                        url = new Link();
+                        disease = new Disease();
+                        // Se verifica si hubo conexión con el documento (enlace Web)
+                        // Se pinta en pantalla el status OK (esta disponible el enlace)
+                        System.out.println(countDoc + " wikipediaExtract " + xmlLink.getUrl() + " ==> " + connection_.getStatus() + "(" + connection_.getStatusCode() + ")");
+                        if (connection_.getStatus().equals(StatusHttpEnum.OK.getDescripcion()) && connection_.getoDoc() != null) {
+                            // Se obtiene el documento HTML (página wikipedia)
+                            //<editor-fold desc="DOCUMENTOS">
+                            document = connection_.getoDoc();
+                            // Se obtiene el elemento HTML que almacena el nombre de la enfermedad
+                            String idElementName = getHighlightXmlByDescription(
+                                    Constants.XML_HL_DISEASENAME, xmlSource).getId();
+                            // Se inicia a introducir información de un documento
+                            doc.setId(countDoc);
+                            doc.setDate(snapshot);
 
-                        // Enlace del documento
-                        url.setId(countDoc);
-                        url.setUrl(xmlLink.getUrl());
+                            // Enlace del documento
+                            url.setId(countDoc);
+                            url.setUrl(xmlLink.getUrl());
 
-                        // Agrega el enlace al documento
-                        doc.setUrl(url);
+                            // Agrega el enlace al documento
+                            doc.setUrl(url);
 
-                        // Almacena información de la enfermdad
-                        disease.setId(countDoc);
-                        disease.setName(document.getElementById(idElementName).text());
-                        //System.out.println("name; " + xmlLink.getConsult() + " ;url; " + xmlLink.getUrl() + " ;extractName; " + disease.getName());
-                        // Agrega la enfermedad al documento. En un documento se habla de una enfermedad
-                        doc.setDisease(disease);
-                        //</editor-fold>
+                            // Almacena información de la enfermdad
+                            disease.setId(countDoc);
+                            disease.setName(document.getElementById(idElementName).text());
+                            //System.out.println("name; " + xmlLink.getConsult() + " ;url; " + xmlLink.getUrl() + " ;extractName; " + disease.getName());
+                            // Agrega la enfermedad al documento. En un documento se habla de una enfermedad
+                            doc.setDisease(disease);
+                            //</editor-fold>
 
-                        // Se llama al método que lee todos los códigos (de los infoboxs) de un documento, si los hay
-                        //<editor-fold desc="EXTRAER CÓDIGOS DE LOS INFOBOX">
-                        List<Code> codes = removeRepetedCodes( getCodes(document, xmlSource) );
-                        doc.setCodeList( codes );
+                            // Se llama al método que lee todos los códigos (de los infoboxs) de un documento, si los hay
+                            //<editor-fold desc="EXTRAER CÓDIGOS DE LOS INFOBOX">
+                            List<Code> codes = removeRepetedCodes(getCodes(document, xmlSource));
+                            doc.setCodeList(codes);
                         /*for (Code code: codes) {
                             System.out.println(code.getCode() +" "+ code.getResource().getName());
                         }*/
-                        //</editor-fold>
-
-                        // Crea lista de secciones
-                        sectionList = new ArrayList<>();
-                        countSections = 1;
-                        // Lee todas las secciones del XML (No todos los documentos tienen
-                        // información en las mismas secciones o incluso no las tienen)
-                        //<editor-fold desc="RECORRIDO DE SECCIONES DEL XML">
-                        for (XmlSection xmlSection : xmlSource.getSectionList()) {
-                            // Crea una sección
-                            section = new Section();
-                            isSection = false;
-                            //System.out.println("Analizando sección: " + section);
-
-                            // Encuentra y almacena una sección <h2>
-                            Element sectionElement = document.getElementById(xmlSection.getId()); //One section is returned!
-                            //<editor-fold desc="PROCESO SOBRE LOS ELEMENTOS DE UNA SECCIÓN">
-                            // Validar que la sección fue encontrada y tiene información
-                            if (sectionElement != null) {
-                                // Crea una lista de textos
-                                textList = new ArrayList<>();
-                                isSection = true;
-
-                                //<editor-fold desc="SECCIONES">
-                                // Almacena la información de una sección
-                                section.setId(countSections);
-                                section.setName(xmlSection.getId());
-                                section.setDescription(sectionElement.text().trim());
-
-                                //System.out.println(sectionElement);
-                                //System.out.println(sectionElement.parent());
-
-                                // Obtiene el padre de la sección
-                                sectionElement = sectionElement.parent();
-                                // Obtiene el siguiente hermano de la sección
-                                Element nextElementBro = sectionElement.nextElementSibling();
-                                //</editor-fold>
-
-                                countText = 1;
-                                // Recorrido de los elementos que contienen texto dentro de una sección (<p>, <ul><ol>)
-                                // Mientras no sea nulo, y el tag sea diferente <h2> no saldrá del ciclo
-                                //<editor-fold desc="OBTENER TEXTOS DE PARRAFOS O LISTAS">
-                                while (nextElementBro != null && nextElementBro.tagName() != xmlSection.getTypeTitle().getName()) {
-                                    //RECORRER LOS TAG QUE DEBEN TENER INFORMACIÓN <p>, <ul>, <ol>
-                                    // Se crea: 1) un parrafo y una lista
-                                    isText = false;
-
-                                    //<editor-fold desc="TITULO DE PÁRRAFO O LISTA">
-                                    //System.out.println(nextElementBro.tagName() + " == " + nextElementBro.text());
-                                    //Obtener el hermano anterior para ver si tiene titulo el parrafo o la lista
-                                    Element prevElementBro = nextElementBro.previousElementSibling();
-
-                                    // Obtiene el titulo del párrafo o nombre del síntoma si existe
-                                    String title = "";
-                                    if (prevElementBro.tagName() == Constants.HTML_H3 || prevElementBro.tagName() == Constants.HTML_H4) {
-                                        if (prevElementBro.text() != null) title = prevElementBro.text();
-                                    }
-                                    //</editor-fold>
-
-                                    // Extrae el texto si es una etiqueta <p> (paragraph)
-                                    if (nextElementBro.tagName() == Constants.HTML_P) {//&& !nextElementBro.text().isEmpty()
-                                        //<editor-fold desc="EXTRAE TEXTO DE UN PARRAFO Y LO ALMACENA EN UN OBJETO PARAGRAPH">
-                                        // Guarda la información extraida de un párrafo wikipedia en un objeto
-                                        // Se crea un párrafo y se extrae su información
-                                        paragraph = setParagraphData(nextElementBro, countText, title);
-                                        if (paragraph!=null) {//System.out.println("ENTRA_paragraph");
-                                            isText = true;
-                                            // Agrega el párrafo a la lista de textos
-                                            textList.add(paragraph);
-                                        }
-                                        //</editor-fold>
-                                        //Extrae el texto si es una etiqueta <ul> o <ol>
-                                        //Actualización para extraer <dl>
-                                    } else if (isElementIsATypeOfList(nextElementBro.tagName())) {//&& !nextElementBro.text().isEmpty()
-                                        //<editor-fold desc="EXTRAE TEXTO DE UN PARRAFO Y LO ALMACENA EN UN OBJETO LIST_">
-                                        // Guarda la información extraida de una lista wikipedia en un objeto
-                                        list_ = setList_Data(nextElementBro, countText, title);
-                                        if (list_!=null) {//System.out.println("ENTRA_list_");
-                                            isText = true;
-                                            // Agrega la lista "List_" a la lista de textos
-                                            textList.add(list_);
-                                        }
-                                        //</editor-fold>
-                                        //Extrae el texto si es una etiqueta <table> y class="wikitable"
-                                    } else if (nextElementBro.tagName() == Constants.HTML_TABLE){
-                                        Elements trs = nextElementBro.select("table.wikitable tr");
-                                        if (trs != null) {
-                                            //System.out.println("Wikitable" + trs.toString());
-                                            // Guarda la información extraida de una wikitable en un objeto
-                                            table = extractWikitableTexts(trs, countText, title);
-                                            // Agrega la lista "List_" a la lista de textos
-                                            if (table!=null) {//System.out.println("ENTRA_table");
-                                                isText = true;
-                                                textList.add(table);
-                                            }
-                                        }
-                                    } else if (nextElementBro.tagName() == Constants.HTML_DIV){
-                                        //Verifica dentro del DIV si:
-                                        boolean findList = verifyList(nextElementBro, isText, list_, countText, title, textList);
-                                        if (findList){//System.out.println("ENTRA_insideDIVtoFindLists");
-                                            countText = textList.size();
-                                            isText = true;
-                                        }
-                                    }
-
-                                    if (isText) {
-                                        countText++;
-                                    }
-
-                                    // Obtiene el siguiente hermano del nodo para seguir con el ciclo while
-                                    nextElementBro = nextElementBro.nextElementSibling();
-                                    //if (i == 100) break;  i++;
-                                }//end while (nextElementBro != null && nextElementBro.tagName() != "h2")
-                                //</editor-fold>
-
-                                section.setTextList(textList);
-
-                            } else {//end if sectionElement != null
-                                //System.out.println("XmlSection " + section + " empty or does not exist");
-                            }//end else if sectionElement != null
                             //</editor-fold>
 
-                            // Hace una cuenta si ha sido un sección válida
-                            if (isSection) {
-                                // Agrega una sección a la lista de secciones
-                                sectionList.add(section);
-                                countSections++;
-                            }
+                            // Crea lista de secciones
+                            sectionList = new ArrayList<>();
+                            countSections = 1;
+                            // Lee todas las secciones del XML (No todos los documentos tienen
+                            // información en las mismas secciones o incluso no las tienen)
+                            //<editor-fold desc="RECORRIDO DE SECCIONES DEL XML">
+                            for (XmlSection xmlSection : xmlSource.getSectionList()) {
+                                // Crea una sección
+                                section = new Section();
+                                isSection = false;
+                                //System.out.println("Analizando sección: " + section);
 
-                        }//end foreach << Se recorren las secciones
-                        //</editor-fold>
+                                // Encuentra y almacena una sección <h2>
+                                Element sectionElement = document.getElementById(xmlSection.getId()); //One section is returned!
+                                //<editor-fold desc="PROCESO SOBRE LOS ELEMENTOS DE UNA SECCIÓN">
+                                // Validar que la sección fue encontrada y tiene información
+                                if (sectionElement != null) {
+                                    // Crea una lista de textos
+                                    textList = new ArrayList<>();
+                                    isSection = true;
 
-                        // Relaciona (agrega) la lista de secciones al documento
-                        doc.setSectionList(sectionList);
+                                    //<editor-fold desc="SECCIONES">
+                                    // Almacena la información de una sección
+                                    section.setId(countSections);
+                                    section.setName(xmlSection.getId());
+                                    section.setDescription(sectionElement.text().trim());
 
-                        // Agrega un documento a la lista de documentos
-                        docList.add(doc);
+                                    //System.out.println(sectionElement);
+                                    //System.out.println(sectionElement.parent());
 
-                    } else {//end if oConnect.connection_().equals("OK")
-                        // Mensaje mostrado al documento que no se pudo conectar
-                        System.out.println(xmlLink.getUrl() + " ==> " + connection_.getStatus());
-                    }//end else if oConnect.connection_().equals("OK")
+                                    // Obtiene el padre de la sección
+                                    sectionElement = sectionElement.parent();
+                                    // Obtiene el siguiente hermano de la sección
+                                    Element nextElementBro = sectionElement.nextElementSibling();
+                                    //</editor-fold>
 
-                    // Relaciona (agrega) la lista de documentos a la fuente "Source"
-                    source.setDocuments(docList);
-                    countDoc++;
+                                    countText = 1;
+                                    // Recorrido de los elementos que contienen texto dentro de una sección (<p>, <ul><ol>)
+                                    // Mientras no sea nulo, y el tag sea diferente <h2> no saldrá del ciclo
+                                    //<editor-fold desc="OBTENER TEXTOS DE PARRAFOS O LISTAS">
+                                    while (nextElementBro != null && nextElementBro.tagName() != xmlSection.getTypeTitle().getName()) {
+                                        //RECORRER LOS TAG QUE DEBEN TENER INFORMACIÓN <p>, <ul>, <ol>
+                                        // Se crea: 1) un parrafo y una lista
+                                        isText = false;
+
+                                        //<editor-fold desc="TITULO DE PÁRRAFO O LISTA">
+                                        //System.out.println(nextElementBro.tagName() + " == " + nextElementBro.text());
+                                        //Obtener el hermano anterior para ver si tiene titulo el parrafo o la lista
+                                        Element prevElementBro = nextElementBro.previousElementSibling();
+
+                                        // Obtiene el titulo del párrafo o nombre del síntoma si existe
+                                        String title = "";
+                                        if (prevElementBro.tagName() == Constants.HTML_H3 || prevElementBro.tagName() == Constants.HTML_H4) {
+                                            if (prevElementBro.text() != null) title = prevElementBro.text();
+                                        }
+                                        //</editor-fold>
+
+                                        // Extrae el texto si es una etiqueta <p> (paragraph)
+                                        if (nextElementBro.tagName() == Constants.HTML_P) {//&& !nextElementBro.text().isEmpty()
+                                            //<editor-fold desc="EXTRAE TEXTO DE UN PARRAFO Y LO ALMACENA EN UN OBJETO PARAGRAPH">
+                                            // Guarda la información extraida de un párrafo wikipedia en un objeto
+                                            // Se crea un párrafo y se extrae su información
+                                            paragraph = setParagraphData(nextElementBro, countText, title);
+                                            if (paragraph != null) {//System.out.println("ENTRA_paragraph");
+                                                isText = true;
+                                                // Agrega el párrafo a la lista de textos
+                                                textList.add(paragraph);
+                                            }
+                                            //</editor-fold>
+                                            //Extrae el texto si es una etiqueta <ul> o <ol>
+                                            //Actualización para extraer <dl>
+                                        } else if (isElementIsATypeOfList(nextElementBro.tagName())) {//&& !nextElementBro.text().isEmpty()
+                                            //<editor-fold desc="EXTRAE TEXTO DE UN PARRAFO Y LO ALMACENA EN UN OBJETO LIST_">
+                                            // Guarda la información extraida de una lista wikipedia en un objeto
+                                            list_ = setList_Data(nextElementBro, countText, title);
+                                            if (list_ != null) {//System.out.println("ENTRA_list_");
+                                                isText = true;
+                                                // Agrega la lista "List_" a la lista de textos
+                                                textList.add(list_);
+                                            }
+                                            //</editor-fold>
+                                            //Extrae el texto si es una etiqueta <table> y class="wikitable"
+                                        } else if (nextElementBro.tagName() == Constants.HTML_TABLE) {
+                                            Elements trs = nextElementBro.select("table.wikitable tr");
+                                            if (trs != null) {
+                                                //System.out.println("Wikitable" + trs.toString());
+                                                // Guarda la información extraida de una wikitable en un objeto
+                                                table = extractWikitableTexts(trs, countText, title);
+                                                // Agrega la lista "List_" a la lista de textos
+                                                if (table != null) {//System.out.println("ENTRA_table");
+                                                    isText = true;
+                                                    textList.add(table);
+                                                }
+                                            }
+                                        } else if (nextElementBro.tagName() == Constants.HTML_DIV) {
+                                            //Verifica dentro del DIV si:
+                                            boolean findList = verifyList(nextElementBro, isText, list_, countText, title, textList);
+                                            if (findList) {//System.out.println("ENTRA_insideDIVtoFindLists");
+                                                countText = textList.size();
+                                                isText = true;
+                                            }
+                                        }
+
+                                        if (isText) {
+                                            countText++;
+                                        }
+
+                                        // Obtiene el siguiente hermano del nodo para seguir con el ciclo while
+                                        nextElementBro = nextElementBro.nextElementSibling();
+                                        //if (i == 100) break;  i++;
+                                    }//end while (nextElementBro != null && nextElementBro.tagName() != "h2")
+                                    //</editor-fold>
+
+                                    section.setTextList(textList);
+
+                                } else {//end if sectionElement != null
+                                    //System.out.println("XmlSection " + section + " empty or does not exist");
+                                }//end else if sectionElement != null
+                                //</editor-fold>
+
+                                // Hace una cuenta si ha sido un sección válida
+                                if (isSection) {
+                                    // Agrega una sección a la lista de secciones
+                                    sectionList.add(section);
+                                    countSections++;
+                                }
+
+                            }//end foreach << Se recorren las secciones
+                            //</editor-fold>
+
+                            // Relaciona (agrega) la lista de secciones al documento
+                            doc.setSectionList(sectionList);
+
+                            // Agrega un documento a la lista de documentos
+                            docList.add(doc);
+
+                        } else {//end if oConnect.connection_().equals("OK")
+                            // Mensaje mostrado al documento que no se pudo conectar
+                            System.out.println(xmlLink.getUrl() + " ==> " + connection_.getStatus());
+                        }//end else if oConnect.connection_().equals("OK")
+
+                        // Relaciona (agrega) la lista de documentos a la fuente "Source"
+                        source.setDocuments(docList);
+                        countDoc++;
+                    }//end if(isRelevant)
                 }//end for String link: source.getLinkList()
 
                 // Relaciona (agrega) una fuente "Source" a la lista de fuentes
