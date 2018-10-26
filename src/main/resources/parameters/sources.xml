@@ -15,6 +15,7 @@
             <section consult="y" id="Diagnosis" type="span" name="Diagnosis" />
             <section consult="y" id="Diagnostic_approach" type="span" name="Diagnostic approach" />
             <section consult="y" id="Presentation" type="span" name="Presentation" />
+            <section consult="y" id="Symptoms_and_causes" type="span" name="Symptoms and causes" />
         </sections>
         <highlights consult="y">
             <tag consult="y" id="content" class="mw-body" type="div" desc="principal" />
@@ -29,6 +30,9 @@
             <tag consult="y" id="hlist" class="hlist hlist-separated" type="div" desc="horizontallist_v1" />
             <tag consult="y" id="text-align:center" class="style" type="css" desc="textaligncenter" />
         </highlights>
+        <dump consult="y">
+            <link consult="y" id="1">https://dumps.wikimedia.org/enwiki/</link>
+        </dump>
         <links consult="y">
             <link consult="y" id="1">https://en.wikipedia.org/wiki/Spider_bite</link>
             <!--<link consult="y" id="1">https://en.wikipedia.org/wiki/Bone_fracture</link>
