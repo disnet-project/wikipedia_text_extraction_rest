@@ -147,13 +147,15 @@ public class ExtractionWikipedia {
                 docList = new ArrayList<>();
                 // Se inicializa un contador para todos los documentos
                 countDoc = 1;
+                int wikipediaWebLinksSize = 0;
                 // Se leen todos los enlaces a los documentos de wikipedia (https...)
                 //<editor-fold desc="LISTA DE ENFERMEDADES LLAMANDO A LA API REST GET_DISEASELIST_FROM_DBPEDIA">
-                List<XmlLink> linkListFromDBPedia = externalDiseaseLinkList;
-                if (linkListFromDBPedia != null) {
-                    if (!linkListFromDBPedia.isEmpty()) {
-                        xmlSource.setLinkList(linkListFromDBPedia);
-                        System.out.println("getDiseaseLinkListFromDBPedia.size(): " + xmlSource.getLinkList().size());
+                List<XmlLink> wikipediaWebLink = externalDiseaseLinkList;
+                if (wikipediaWebLink != null) {
+                    if (!wikipediaWebLink.isEmpty()) {
+                        xmlSource.setLinkList(wikipediaWebLink);
+                        wikipediaWebLinksSize = xmlSource.getLinkList().size();
+                        System.out.println("Wikipedia Web Links .size(): " + wikipediaWebLinksSize);
                     }
                 }else{
                     System.out.println("Using the xml configuration url list...");
@@ -171,7 +173,7 @@ public class ExtractionWikipedia {
                         disease = new Disease();
                         // Se verifica si hubo conexión con el documento (enlace Web)
                         // Se pinta en pantalla el status OK (esta disponible el enlace)
-                        System.out.println(countDoc + " wikipediaExtract " + xmlLink.getUrl() + " ==> " + connection_.getStatus() + "(" + connection_.getStatusCode() + ")");
+                        System.out.println(countDoc + " to " + wikipediaWebLinksSize + " wikipediaExtract " + xmlLink.getUrl() + " ==> " + connection_.getStatus() + "(" + connection_.getStatusCode() + ")");
                         if (connection_.getStatus().equals(StatusHttpEnum.OK.getDescripcion()) && connection_.getoDoc() != null) {
                             // Se obtiene el documento HTML (página wikipedia)
                             //<editor-fold desc="DOCUMENTOS">
@@ -493,11 +495,13 @@ public class ExtractionWikipedia {
             if (xmlSource.getName().equals(Constants.SOURCE_WIKIPEDIA)) {
 
                 //<editor-fold desc="LISTA DE ENFERMEDADES LLAMANDO A LA API REST GET_DISEASELIST_FROM_DBPEDIA">
-                List<XmlLink> linkListFromDBPedia = externalDiseaseLinkList;
-                if (linkListFromDBPedia != null) {
-                    if (!linkListFromDBPedia.isEmpty()) {
-                        xmlSource.setLinkList(linkListFromDBPedia);
-                        System.out.println("getDiseaseLinkListFromDBPedia.size(): " + xmlSource.getLinkList().size());
+                int wikipediaWebLinksSize = 0;
+                List<XmlLink> wikipediaWebLink = externalDiseaseLinkList;
+                if (wikipediaWebLink != null) {
+                    if (!wikipediaWebLink.isEmpty()) {
+                        xmlSource.setLinkList(wikipediaWebLink);
+                        wikipediaWebLinksSize = xmlSource.getLinkList().size();
+                        System.out.println("Wikipedia Web Links .size(): " + wikipediaWebLinksSize);
                     }
                 }
                 //</editor-fold>
@@ -506,7 +510,7 @@ public class ExtractionWikipedia {
                     connection_ = connectDocument.connect(oXmlLink.getUrl());
 
                     //Verificación de la conexión del enlace >
-                    System.out.println(x + " wikipediaExtract codes (" + oXmlLink.getUrl() + ") ==> " + connection_.getStatus() + "("+connection_.getStatusCode()+")");
+                    System.out.println(x + " to " + wikipediaWebLinksSize + " wikipediaExtract codes (" + oXmlLink.getUrl() + ") ==> " + connection_.getStatus() + "("+connection_.getStatusCode()+")");
                     if (connection_.getStatus().equals(StatusHttpEnum.OK.getDescripcion()) && connection_.getoDoc() != null) {
 
                         //Se obtiene el documento html "DOM"

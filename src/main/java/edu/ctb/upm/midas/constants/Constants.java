@@ -32,6 +32,11 @@ public class Constants {
     public static final String TEXTS = "texts";
     public static final String RESOURCES = "resources";
 
+    public static final String WIKIPEDIA_TEMPLATE_LINK = "https://en.wikipedia.org/wiki/";
+    public static final String WIKIPEDIA_WEB_PAGE_TITLES_FOLDER = "tmp/enwiki_all_title_pages/";
+    public static final String WIKIPEDIA_DUMPS_LINK = "https://dumps.wikimedia.org/enwiki/";//
+    public static final String WIKIPEDIA_LAST_DUMP_LINK = "http://dumps.wikimedia.org/enwiki/latest/enwiki-latest-all-titles-in-ns0.gz";
+
     public static final String IMAGE_PATTERN =
             "([^\\s]+(\\.(?i)(jpg|png|gif|bmp))$)";
 

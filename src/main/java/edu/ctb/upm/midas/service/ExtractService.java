@@ -2,6 +2,7 @@ package edu.ctb.upm.midas.service;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import edu.ctb.upm.midas.common.util.Common;
 import edu.ctb.upm.midas.common.util.TimeProvider;
 import edu.ctb.upm.midas.component.ExtractionWikipedia;
 import edu.ctb.upm.midas.constants.Constants;
@@ -11,14 +12,19 @@ import edu.ctb.upm.midas.model.Request;
 import edu.ctb.upm.midas.model.RequestJSON;
 import edu.ctb.upm.midas.model.Response;
 import edu.ctb.upm.midas.model.ResponseJSON;
+import edu.ctb.upm.midas.model.document_structure.Doc;
 import edu.ctb.upm.midas.model.document_structure.Source;
 import edu.ctb.upm.midas.model.document_structure.code.Resource;
+import edu.ctb.upm.midas.model.xml.XmlLink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -41,6 +47,8 @@ public class ExtractService {
     private TimeProvider timeProvider;
     @Autowired
     private ExtractionWikipedia extractionWikipedia;
+    @Autowired
+    private Common common;
 
 
 
@@ -77,6 +85,13 @@ public class ExtractService {
         response.setStart_time(start);
         end = timeProvider.getTimestampFormat();
         response.setEnd_time(end);
+
+        System.out.println("===== REVIEW =====");
+        System.out.println("Request WebLinks size: " + request.getWikipediaLinks().size());
+        List<Doc> docs = new ArrayList<>();
+        for (Source source: response.getSources()) { docs = source.getDocuments();break; }
+        System.out.println("Response WebLinks size (Valid Wikipedia Articles): " + docs.size());
+        System.out.println("===== /REVIEW =====");
 
         if (request.isJson()) {
             try {
@@ -122,8 +137,6 @@ public class ExtractService {
 
         return response;
     }
-
-
 
 
     public Response extractResources(Request request) throws Exception {
@@ -258,6 +271,52 @@ public class ExtractService {
         }*/
 
         return response;
+    }
+
+
+    /**
+     * @param snapshot
+     * @return
+     * @throws Exception
+     */
+    public List<XmlLink> readAllWikipediaWebPageTitlesFile(String snapshot, String file_name) throws Exception {
+        System.out.println("Read enwiki-latest-all-titles-in-ns0!... ");
+        String fileName = file_name;
+        String path = Constants.WIKIPEDIA_WEB_PAGE_TITLES_FOLDER + fileName;
+
+        char[] animationChars = new char[]{'|', '/', '-', '\\'};
+
+        List<String> webLinks = new ArrayList<>();
+        List<XmlLink> xmlLinks = new ArrayList<>();
+        try {
+            webLinks = Files.readAllLines(Paths.get(path), StandardCharsets.UTF_8);
+            int size = webLinks.size();
+            System.out.println("Forming " + webLinks.size() + " Wikipedia Web links from \"All Wikipedia title pages");
+            int count = 1;
+            for (String title: webLinks) {
+                if (!common.isEmpty(title)) {
+                    XmlLink link = new XmlLink(count, Constants.WIKIPEDIA_TEMPLATE_LINK + title);
+                    xmlLinks.add(link);
+//                    System.out.println(title);
+                    System.out.print("Processing: ");
+                    System.out.print( (count*100)/size + " %\r");
+                    count++;
+                }
+            }
+            System.out.println("Complete web link list, done!");
+        }catch (IOException e) {
+
+            // do something
+            e.printStackTrace();
+        }
+//        try {
+//            BufferedReader br = new BufferedReader(new FileReader(path));
+//            response = gson.fromJson(br, ResponseJSON.class);
+//        }catch (Exception e){
+//            System.out.println("Error to read or convert JSON!..." + e.getLocalizedMessage() + e.getMessage() + e.getCause());
+//        }
+
+        return xmlLinks;
     }
 
 }

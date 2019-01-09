@@ -17,6 +17,7 @@ public class Request {
     private String snapshot;
     private boolean json;
 
+
     public Request() {
     }
 
