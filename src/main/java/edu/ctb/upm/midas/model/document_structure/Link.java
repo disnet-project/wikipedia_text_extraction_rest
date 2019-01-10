@@ -1,5 +1,7 @@
 package edu.ctb.upm.midas.model.document_structure;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.util.Objects;
 
 /**
@@ -15,7 +17,9 @@ public class Link {
 
     private int id;
     private String url;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String description;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Source source;
 
 

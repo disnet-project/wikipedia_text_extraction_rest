@@ -38,6 +38,12 @@ public class XmlLink {
         this.url = url;
     }
 
+    public XmlLink(Integer id, String url, boolean relevant) {
+        this.id = id;
+        this.url = url;
+        this.relevant = relevant;
+    }
+
     public String getConsult() {
         return consult;
     }

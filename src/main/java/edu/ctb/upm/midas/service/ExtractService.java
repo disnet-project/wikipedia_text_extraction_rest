@@ -82,14 +82,22 @@ public class ExtractService {
             response.setResponseMessage(ApiErrorEnum.INVALID_SNAPSHOT.getDescription());
         }
         response.setSources(sourceList);
+        response.setSourcesCount(sourceList.size());
         response.setStart_time(start);
         end = timeProvider.getTimestampFormat();
         response.setEnd_time(end);
 
+
+
         System.out.println("===== REVIEW =====");
         System.out.println("Request WebLinks size: " + request.getWikipediaLinks().size());
         List<Doc> docs = new ArrayList<>();
-        for (Source source: response.getSources()) { docs = source.getDocuments();break; }
+        for (Source source: response.getSources()) {
+            docs = source.getDocuments();
+            //enumera los documentos desde el 1
+            documentOrder(docs);
+            break;
+        }
         System.out.println("Response WebLinks size (Valid Wikipedia Articles): " + docs.size());
         System.out.println("===== /REVIEW =====");
 
@@ -107,6 +115,15 @@ public class ExtractService {
         System.out.println("Inicio:" + start + " | Termino: " + end);
 
         return response;
+    }
+
+
+    public void documentOrder(List<Doc> documentList){
+        int count = 1;
+        for (Doc document: documentList) {
+            document.setId(count);
+            count++;
+        }
     }
 
 
@@ -295,7 +312,11 @@ public class ExtractService {
             int count = 1;
             for (String title: webLinks) {
                 if (!common.isEmpty(title)) {
-                    XmlLink link = new XmlLink(count, Constants.WIKIPEDIA_TEMPLATE_LINK + title);
+                    XmlLink link;
+                    if (count==1)
+                        link = new XmlLink(count, Constants.WIKIPEDIA_TEMPLATE_LINK + title, false);
+                    else
+                        link = new XmlLink(count, Constants.WIKIPEDIA_TEMPLATE_LINK + title, true);
                     xmlLinks.add(link);
 //                    System.out.println(title);
                     System.out.print("Processing: ");

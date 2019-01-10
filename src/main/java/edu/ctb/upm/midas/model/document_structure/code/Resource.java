@@ -1,5 +1,6 @@
 package edu.ctb.upm.midas.model.document_structure.code;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import edu.ctb.upm.midas.model.document_structure.Link;
 
 import java.util.List;
@@ -18,8 +19,9 @@ public class Resource {
 
     private int id;
     private String name;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String nameDisease;
-
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Link> linkList;
 
 

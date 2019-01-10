@@ -11,6 +11,7 @@ public class Response {
 
     private String responseCode;
     private String responseMessage;
+    private Integer sourcesCount;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Source> sources;
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -33,6 +34,14 @@ public class Response {
 
     public void setResponseMessage(String responseMessage) {
         this.responseMessage = responseMessage;
+    }
+
+    public Integer getSourcesCount() {
+        return sourcesCount;
+    }
+
+    public void setSourcesCount(Integer sourcesCount) {
+        this.sourcesCount = sourcesCount;
     }
 
     public List<Source> getSources() {

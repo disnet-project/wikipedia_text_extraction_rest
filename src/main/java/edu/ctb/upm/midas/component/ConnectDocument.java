@@ -86,12 +86,18 @@ public class ConnectDocument {
             String link_ = "";
             if (connection_.getLink().contains(Constants.HTTP_HEADER)) link_ = convertLink.replace("http", "https");
             else if (convertLink.contains(Constants.HTTPS_HEADER)) link_ = connection_.getLink();
-            Connection connection = Jsoup.connect( link_ ).userAgent("Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:25.0) Gecko/20100101 Firefox/25.0").referrer("http://www.google.com").timeout(JSOUP_TIMEOUT*1000);
-            // Connection connection = Jsoup.connect( connection_.getLink().replace("http", "https") )
-            //oResponse = connection.execute(); || Jsoup.connect(Constants.HTTP_HEADER + connection_.getLink()
-            connection_.setoDoc( connection.get()/*getHtmlDocument(connection)*/ );
-            connection_.setStatus( connection.execute().statusMessage() );
-            connection_.setStatusCode( connection.execute().statusCode() + "" );
+
+//            System.out.println("try: " + link_);
+            if (!common.isEmpty(link_)) {
+                Connection connection = Jsoup.connect(link_).userAgent("Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:25.0) Gecko/20100101 Firefox/25.0").referrer("http://www.google.com").timeout(JSOUP_TIMEOUT * 1000);
+                // Connection connection = Jsoup.connect( connection_.getLink().replace("http", "https") )
+                //oResponse = connection.execute(); || Jsoup.connect(Constants.HTTP_HEADER + connection_.getLink()
+                connection_.setoDoc(connection.get()/*getHtmlDocument(connection)*/);
+                connection_.setStatus(connection.execute().statusMessage());
+                connection_.setStatusCode(connection.execute().statusCode() + "");
+            }else {
+
+            }
         } catch (Exception e) {
             connection_.setStatus( StatusHttpEnum.NOT_FOUND.getDescripcion() );
             connection_.setStatusCode( StatusHttpEnum.NOT_FOUND.getClave() );

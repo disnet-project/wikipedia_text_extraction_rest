@@ -29,6 +29,9 @@ public class Doc {
     private List<Code> codeList;
 
 
+    public Doc() {
+        this.diseaseArticle = false;
+    }
 
     public int getId() {
         return id;

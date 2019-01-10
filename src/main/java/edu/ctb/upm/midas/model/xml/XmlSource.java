@@ -24,6 +24,7 @@ public class XmlSource implements Serializable {
     private String link;//URL Principal de la fuente
 
     private List<XmlSection> sectionList;
+    private List<XmlSpecialSection> specialSectionList;
     private List<XmlHighlight> highlightList;
     private List<XmlLink> linkList;
     private List<DiseaseAlbumLink> diseaseAlbumLinkList;
@@ -75,6 +76,14 @@ public class XmlSource implements Serializable {
 
     public void setSectionList(List<XmlSection> sectionList) {
         this.sectionList = sectionList;
+    }
+
+    public List<XmlSpecialSection> getSpecialSectionList() {
+        return specialSectionList;
+    }
+
+    public void setSpecialSectionList(List<XmlSpecialSection> specialSectionList) {
+        this.specialSectionList = specialSectionList;
     }
 
     public List<XmlHighlight> getHighlightList() {

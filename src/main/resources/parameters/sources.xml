@@ -17,6 +17,10 @@
             <section consult="y" id="Presentation" type="span" name="Presentation" />
             <section consult="y" id="Symptoms_and_causes" type="span" name="Symptoms and causes" />
         </sections>
+        <special_sections consult="y" type="h2" class="mw-headline">
+            <section consult="y" id="Symptoms_of_" type="span" name="Symptoms of " />
+            <section consult="y" id="Causes_of_" type="span" name="Causes of " />
+        </special_sections>
         <highlights consult="y">
             <tag consult="y" id="content" class="mw-body" type="div" desc="principal" />
             <tag consult="y" id="firstHeading" class="firstHeading" type="h1" desc="diseasename" />

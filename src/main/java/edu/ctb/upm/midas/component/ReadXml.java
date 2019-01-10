@@ -2,10 +2,7 @@ package edu.ctb.upm.midas.component;
 
 import edu.ctb.upm.midas.common.util.Common;
 import edu.ctb.upm.midas.constants.Constants;
-import edu.ctb.upm.midas.model.xml.XmlHighlight;
-import edu.ctb.upm.midas.model.xml.XmlLink;
-import edu.ctb.upm.midas.model.xml.XmlSection;
-import edu.ctb.upm.midas.model.xml.XmlSource;
+import edu.ctb.upm.midas.model.xml.*;
 
 import edu.ctb.upm.midas.model.xml.title.*;
 import org.jdom2.Document;
@@ -52,6 +49,7 @@ public class ReadXml {
 //        ArrayList<XmlSource> xmlList = new ArrayList<>();
         XmlSource sourceConfiguration = null;
         ArrayList<XmlSection> sectionList = new ArrayList<>();
+        ArrayList<XmlSpecialSection> specialSectionList = new ArrayList<>();
         ArrayList<XmlHighlight> highlightList = new ArrayList<>();
         ArrayList<XmlLink> linkList = new ArrayList<>();
 
@@ -91,6 +89,16 @@ public class ReadXml {
                     }//end if( sections.getAttributeValue("consult").charAt(0) == 'y') Se permite 'y' consultar las secciones
                     //Se almacena la lista de sections al objeto
                     oXml.setSectionList(sectionList);
+                    //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+                    //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                    Element specialSections = source.getChild(Constants.XML_TAG_SPECIAL_SECTIONS);
+                    //Se permite 'y' consultar todas las secciones
+                    if (specialSections.getAttributeValue(Constants.XML_ATT_CONSULT).trim().equals("y")) {
+                        processXmlSpecialSection(specialSections, specialSectionList);
+                    }//end if( sections.getAttributeValue("consult").charAt(0) == 'y') Se permite 'y' consultar las secciones
+                    //Se almacena la lista de sections al objeto
+                    oXml.setSpecialSectionList(specialSectionList);
                     //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
                     //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -215,6 +223,40 @@ public class ReadXml {
             }//end for (int l = 0; l < sectionsList.size(); l++)
             //Se eliminan las 'section' repetidas
             removeRepetedSections(sectionList);
+
+        }//end if (sectionsList.size() > 0)
+
+    }//end method public void processXmlSection(Element sections, List_<XmlSection> sectionList)
+
+
+    /**
+     * @param specialSections
+     * @param specialSectionList
+     */
+    public void processXmlSpecialSection(Element specialSections, List<XmlSpecialSection> specialSectionList){
+        //<<<<Se obtiene el hijo 'section' y después la lista de sus hijos>>>>
+        List specialSectionsList = specialSections.getChildren();
+        //Validación de lista de enlaces vacía
+        if (specialSectionsList.size() > 0) {
+            //Se recorren los hijos de 'section'
+            for (int l = 0; l < specialSectionsList.size(); l++) {
+                XmlSpecialSection specialSection = new XmlSpecialSection();
+                specialSection.setTypeTitle( getTypeTitle( specialSections.getAttributeValue( Constants.XML_ATT_TYPE ).trim() ) );
+                specialSection.setClass_( specialSections.getAttributeValue( Constants.XML_ATT_CLASS ).trim() );
+                //Se obtiene el prelemento 'section'
+                Element section = (Element) specialSectionsList.get(l);
+
+                if( section.getAttributeValue( Constants.XML_ATT_CONSULT ).trim().equals( Constants.XML_ATT_CONSULT_YES ) ) {
+                    //Se obtiene el valor de los atributos de cada tag 'section'
+                    specialSection.setConsult( section.getAttributeValue( Constants.XML_ATT_CONSULT ).trim() );
+                    specialSection.setId( section.getAttributeValue( Constants.XML_ATT_ID ).trim() );
+                    specialSection.setType( section.getAttributeValue( Constants.XML_ATT_TYPE ).trim() );
+                    specialSection.setName( section.getAttributeValue( Constants.XML_ATT_NAME ).trim() );
+                }
+                specialSectionList.add(specialSection);
+            }//end for (int l = 0; l < sectionsList.size(); l++)
+            //Se eliminan las 'section' repetidas
+//            removeRepetedSections(specialSectionList);
 
         }//end if (sectionsList.size() > 0)
 

@@ -1,7 +1,5 @@
 package edu.ctb.upm.midas.model.xml;
 
-import edu.ctb.upm.midas.model.xml.title.Title;
-
 import java.util.Objects;
 
 /**
@@ -13,31 +11,13 @@ import java.util.Objects;
  * @className XmlSection
  * @see
  */
-public class XmlSection extends XmlSectionFather {
+public class XmlSpecialSection extends XmlSectionFather {
 
     private String consult;
     private String id;
     private String type;
     private String name;
 
-
-    public XmlSection() {
-    }
-
-    public XmlSection(Title typeTitle, String class_, String consult, String id, String type, String name) {
-        super(typeTitle, class_);
-        this.consult = consult;
-        this.id = id;
-        this.type = type;
-        this.name = name;
-    }
-
-    public XmlSection(String consult, String id, String type, String name) {
-        this.consult = consult;
-        this.id = id;
-        this.type = type;
-        this.name = name;
-    }
 
     public String getConsult() {
         return consult;
@@ -74,26 +54,13 @@ public class XmlSection extends XmlSectionFather {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof XmlSection)) return false;
-        XmlSection section = (XmlSection) o;
+        if (!(o instanceof XmlSpecialSection)) return false;
+        XmlSpecialSection section = (XmlSpecialSection) o;
         return Objects.equals(getId(), section.getId());
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(getId());
-    }
-
-
-    @Override
-    public String toString() {
-        return "XmlSection{" +
-                "typeTitle='" + super.getTypeTitle() + '\'' +
-                "class_='" + super.getClass_() + '\'' +
-                "consult='" + consult + '\'' +
-                ", id='" + id + '\'' +
-                ", type='" + type + '\'' +
-                ", name='" + name + '\'' +
-                '}';
     }
 }

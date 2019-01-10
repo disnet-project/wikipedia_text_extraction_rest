@@ -5,10 +5,7 @@ import edu.ctb.upm.midas.model.document_structure.*;
 import edu.ctb.upm.midas.model.document_structure.code.Code;
 import edu.ctb.upm.midas.model.document_structure.code.Resource;
 import edu.ctb.upm.midas.model.document_structure.text.*;
-import edu.ctb.upm.midas.model.xml.XmlHighlight;
-import edu.ctb.upm.midas.model.xml.XmlLink;
-import edu.ctb.upm.midas.model.xml.XmlSection;
-import edu.ctb.upm.midas.model.xml.XmlSource;
+import edu.ctb.upm.midas.model.xml.*;
 import edu.ctb.upm.midas.enums.StatusHttpEnum;
 import edu.ctb.upm.midas.common.util.Common;
 import edu.ctb.upm.midas.common.util.TimeProvider;
@@ -155,11 +152,11 @@ public class ExtractionWikipedia {
                     if (!wikipediaWebLink.isEmpty()) {
                         xmlSource.setLinkList(wikipediaWebLink);
                         wikipediaWebLinksSize = xmlSource.getLinkList().size();
-                        System.out.println("Wikipedia Web Links .size(): " + wikipediaWebLinksSize);
                     }
                 }else{
                     System.out.println("Using the xml configuration url list...");
                 }
+                System.out.println("Wikipedia Web Links .size(): " + xmlSource.getLinkList().size());
                 //</editor-fold>
                 for (XmlLink xmlLink : xmlSource.getLinkList()) {
                     //Verifica que el enlace Web sea relevante, si no lo es, ni siquiera se conectará
@@ -173,7 +170,7 @@ public class ExtractionWikipedia {
                         disease = new Disease();
                         // Se verifica si hubo conexión con el documento (enlace Web)
                         // Se pinta en pantalla el status OK (esta disponible el enlace)
-                        System.out.println(countDoc + " to " + wikipediaWebLinksSize + " wikipediaExtract " + xmlLink.getUrl() + " ==> " + connection_.getStatus() + "(" + connection_.getStatusCode() + ")");
+                        System.out.println(countDoc + " to " + wikipediaWebLinksSize + " (" + (countDoc*100)/wikipediaWebLinksSize + "%) wikipediaExtract " + xmlLink.getUrl() + " ==> " + connection_.getStatus() + "(" + connection_.getStatusCode() + ")");
                         if (connection_.getStatus().equals(StatusHttpEnum.OK.getDescripcion()) && connection_.getoDoc() != null) {
                             // Se obtiene el documento HTML (página wikipedia)
                             //<editor-fold desc="DOCUMENTOS">
@@ -204,6 +201,7 @@ public class ExtractionWikipedia {
                             //<editor-fold desc="EXTRAER CÓDIGOS DE LOS INFOBOX">
                             List<Code> codes = removeRepetedCodes(getCodes(document, xmlSource));
                             doc.setCodeList(codes);
+                            doc.setCodeCount(doc.getCodeList().size());
                         /*for (Code code: codes) {
                             System.out.println(code.getCode() +" "+ code.getResource().getName());
                         }*/
@@ -215,6 +213,19 @@ public class ExtractionWikipedia {
                             // Lee todas las secciones del XML (No todos los documentos tienen
                             // información en las mismas secciones o incluso no las tienen)
                             //<editor-fold desc="RECORRIDO DE SECCIONES DEL XML">
+                            //Agregar dos secciones nuevas
+                            //      "Symptoms of ..." y "Causes of ..."
+                            for (XmlSpecialSection xmlSpecialSection: xmlSource.getSpecialSectionList()) {
+                                XmlSection xmlSection = new XmlSection(
+                                        xmlSpecialSection.getTypeTitle(),
+                                        xmlSpecialSection.getClass_(),
+                                        xmlSpecialSection.getConsult(),
+                                        xmlSpecialSection.getId() + disease.getName().toLowerCase(),
+                                        xmlSpecialSection.getType(),
+                                        xmlSpecialSection.getName() + Constants.BLANK_SPACE + disease.getName().toLowerCase());
+                                xmlSource.getSectionList().add(xmlSection);
+//                                System.out.println("xmlSection: " + xmlSection);
+                            }
                             for (XmlSection xmlSection : xmlSource.getSectionList()) {
                                 // Crea una sección
                                 section = new Section();
@@ -222,6 +233,7 @@ public class ExtractionWikipedia {
                                 //System.out.println("Analizando sección: " + section);
 
                                 // Encuentra y almacena una sección <h2>
+                                //System.out.println(xmlSection.getId());
                                 Element sectionElement = document.getElementById(xmlSection.getId()); //One section is returned!
                                 //<editor-fold desc="PROCESO SOBRE LOS ELEMENTOS DE UNA SECCIÓN">
                                 // Validar que la sección fue encontrada y tiene información
@@ -323,6 +335,7 @@ public class ExtractionWikipedia {
                                     //</editor-fold>
 
                                     section.setTextList(textList);
+                                    section.setTextCount(section.getTextList().size());
 
                                 } else {//end if sectionElement != null
                                     //System.out.println("XmlSection " + section + " empty or does not exist");
@@ -341,9 +354,18 @@ public class ExtractionWikipedia {
 
                             // Relaciona (agrega) la lista de secciones al documento
                             doc.setSectionList(sectionList);
+                            doc.setSectionCount(doc.getSectionList().size());
 
-                            // Agrega un documento a la lista de documentos
-                            docList.add(doc);
+                            //Verifica si el nuevo documento es verdaderamente revelante
+                            // si presenta códigos de enfermedad o al menos un texto en alguna
+                            // de sus secciones, entonces se considerará relevante y por lo tanto
+                            // se añadirá a la lista final de documentos
+                            if (isRelevantDocument(doc)){
+                                // Agrega un documento a la lista de documentos
+                                docList.add(doc);
+                            }else{
+                                removeDocument(doc);
+                            }
 
                         } else {//end if oConnect.connection_().equals("OK")
                             // Mensaje mostrado al documento que no se pudo conectar
@@ -352,6 +374,7 @@ public class ExtractionWikipedia {
 
                         // Relaciona (agrega) la lista de documentos a la fuente "Source"
                         source.setDocuments(docList);
+                        source.setDocumentCount(source.getDocuments().size());
                         countDoc++;
                     }//end if(isRelevant)
                 }//end for String link: source.getLinkList()
@@ -367,6 +390,36 @@ public class ExtractionWikipedia {
         // Retorna la lista de fuentes, con sus documentos, enfermedades, secciones, códigos y textos...
         return sourceList;
 
+    }
+
+
+    public boolean isRelevantDocument(Doc document){
+        boolean response = false;
+        boolean hasCodes = false;
+        boolean hasSections = false;
+
+        if (document!=null){
+            if (document.getCodeList().size() > 0) hasCodes = true;
+            if (document.getSectionList().size() > 0) hasSections = true;
+            //Toma de desición
+            if (hasCodes || hasSections) {
+                document.setDiseaseArticle(true);
+                response = document.isDiseaseArticle();
+            }
+        }
+
+        return response;
+    }
+
+
+    public void removeDocument(Doc document){
+        if (document.getCodeList()!=null) document.setCodeList(null);
+        if (document.getSectionList()!=null) document.setSectionList(null);
+        if (document.getDisease()!=null) document.setDisease(null);
+        if (document.getUrl()!=null) document.setUrl(null);
+        if (!common.isEmpty(document.getDate())) document.setDate(null);
+
+        document = null;
     }
 
 
@@ -510,7 +563,7 @@ public class ExtractionWikipedia {
                     connection_ = connectDocument.connect(oXmlLink.getUrl());
 
                     //Verificación de la conexión del enlace >
-                    System.out.println(x + " to " + wikipediaWebLinksSize + " wikipediaExtract codes (" + oXmlLink.getUrl() + ") ==> " + connection_.getStatus() + "("+connection_.getStatusCode()+")");
+                    System.out.println(x + " to " + wikipediaWebLinksSize + " (" + (x*100)/wikipediaWebLinksSize + "%) wikipediaExtract codes (" + oXmlLink.getUrl() + ") ==> " + connection_.getStatus() + "("+connection_.getStatusCode()+")");
                     if (connection_.getStatus().equals(StatusHttpEnum.OK.getDescripcion()) && connection_.getoDoc() != null) {
 
                         //Se obtiene el documento html "DOM"

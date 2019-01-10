@@ -74,6 +74,14 @@ public class ExtractionController {
         return extractService.extract(request);
     }
 
+    @RequestMapping(path =  {  "${my.service.rest.request.mapping.resources.all_pages.approach.path}" },
+            method = RequestMethod.GET)
+    public Response extractResourcesAllPages(HttpServletRequest httpRequest, Device device) throws Exception {
+        List<XmlLink> webLinks = extractService.readAllWikipediaWebPageTitlesFile("", "enwiki-latest-all-titles-in-ns0");
+        Request request = new Request(webLinks, timeProvider.getNowFormatyyyyMMdd(), true);
+        return extractService.extract(request);
+    }
+
     @RequestMapping(path = { "/check" }, //wikipedia document_structure
             method = RequestMethod.GET)
     public void checkLinks() throws Exception {

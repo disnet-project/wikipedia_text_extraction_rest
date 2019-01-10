@@ -116,6 +116,7 @@ public class Constants {
 
     public static final String XML_ROOT_TAG = "source";
     public static final String XML_TAG_SECTIONS = "sections";
+    public static final String XML_TAG_SPECIAL_SECTIONS = "special_sections";
     public static final String XML_TAG_HIGHLIGTS = "highlights";
     public static final String XML_TAG_LINKS = "links";
     public static final String XML_TAG_NAME = "name";
