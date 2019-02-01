@@ -155,6 +155,7 @@ public class ExtractionWikipedia {
                     }
                 }else{
                     System.out.println("Using the xml configuration url list...");
+                    wikipediaWebLinksSize = xmlSource.getLinkList().size();
                 }
                 System.out.println("Wikipedia Web Links .size(): " + xmlSource.getLinkList().size());
                 //</editor-fold>
@@ -220,7 +221,7 @@ public class ExtractionWikipedia {
                                         xmlSpecialSection.getTypeTitle(),
                                         xmlSpecialSection.getClass_(),
                                         xmlSpecialSection.getConsult(),
-                                        xmlSpecialSection.getId() + disease.getName().toLowerCase(),
+                                        xmlSpecialSection.getId() + disease.getName().toLowerCase().replace(Constants.BLANK_SPACE, Constants.INNER_PARAM_SEP),
                                         xmlSpecialSection.getType(),
                                         xmlSpecialSection.getName() + Constants.BLANK_SPACE + disease.getName().toLowerCase());
                                 xmlSource.getSectionList().add(xmlSection);

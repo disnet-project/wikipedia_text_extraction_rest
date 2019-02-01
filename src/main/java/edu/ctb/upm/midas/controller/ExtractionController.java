@@ -85,8 +85,8 @@ public class ExtractionController {
     @RequestMapping(path = { "/check" }, //wikipedia document_structure
             method = RequestMethod.GET)
     public void checkLinks() throws Exception {
-//        extractService.checkLinks();
-        extractService.readAllWikipediaWebPageTitlesFile("", "enwiki-latest-all-titles-in-ns0");
+        extractService.checkLinks();
+//        extractService.readAllWikipediaWebPageTitlesFile("", "enwiki-latest-all-titles-in-ns0");
     }
 
 

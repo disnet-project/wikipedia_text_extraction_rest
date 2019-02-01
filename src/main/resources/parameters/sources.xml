@@ -16,6 +16,8 @@
             <section consult="y" id="Diagnostic_approach" type="span" name="Diagnostic approach" />
             <section consult="y" id="Presentation" type="span" name="Presentation" />
             <section consult="y" id="Symptoms_and_causes" type="span" name="Symptoms and causes" />
+            <section consult="y" id="Diagnostic" type="span" name="Diagnostic" />
+            <section consult="y" id="Causes_of_injury" type="span" name="Causes of injury" />
         </sections>
         <special_sections consult="y" type="h2" class="mw-headline">
             <section consult="y" id="Symptoms_of_" type="span" name="Symptoms of " />
@@ -39,6 +41,8 @@
         </dump>
         <links consult="y">
             <link consult="y" id="1">https://en.wikipedia.org/wiki/Spider_bite</link>
+            <link consult="y" id="1">https://en.wikipedia.org/wiki/Snapping_hip_syndrome</link>
+            <link consult="y" id="1">https://en.wikipedia.org/wiki/Hematocolpos</link>
             <!--<link consult="y" id="1">https://en.wikipedia.org/wiki/Bone_fracture</link>
             <link consult="y" id="1">http://en.wikipedia.org/wiki/Polyarteritis_nodosa</link>
             <link consult="y" id="2">https://en.wikipedia.org/wiki/Cystinuria</link>

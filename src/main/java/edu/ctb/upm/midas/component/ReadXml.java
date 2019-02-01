@@ -319,6 +319,7 @@ public class ReadXml {
                     oLink.setConsult( link.getAttributeValue( Constants.XML_ATT_CONSULT ).trim() );
                     oLink.setId( Integer.parseInt( link.getAttributeValue( Constants.XML_ATT_ID ).trim() ) );
                     oLink.setUrl( common.replaceUnicodeToSpecialCharacters( link.getTextTrim() ) );
+                    oLink.setRelevant(true);
 
                     linkList.add(oLink);
                 }
