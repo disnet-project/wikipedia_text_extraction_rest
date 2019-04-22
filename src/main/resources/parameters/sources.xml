@@ -20,6 +20,7 @@
             <section consult="y" id="Causes_of_injury" type="span" name="Causes of injury" />
             <section consult="y" id="Signs_&amp;_symptoms" type="span" name="Signs &amp; symptoms" />
             <section consult="y" id="Symptoms_and_diagnosis" type="span" name="Symptoms and diagnosis" />
+            <section consult="y" id="Symptoms_and_causes" type="span" name="Symptoms and causes" />
         </sections>
         <special_sections consult="y" type="h2" class="mw-headline">
             <section consult="y" id="Symptoms_of_" type="span" name="Symptoms of " />

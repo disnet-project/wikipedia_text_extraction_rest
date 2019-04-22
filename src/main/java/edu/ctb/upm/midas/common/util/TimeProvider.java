@@ -43,7 +43,7 @@ public class TimeProvider {
 
     public String getNowFormatyyyyMMdd(){
 //        return String.valueOf(new Date(118, 7, 15));
-//        return new SimpleDateFormat("yyyy-MM-dd").format(new Date(118, 7, 15));
+//        return new SimpleDateFormat("yyyy-MM-dd").format(new Date(119, 3, 15));
         return new SimpleDateFormat("yyyy-MM-dd").format(new Date(new java.util.Date().getTime()));
     }
 
