@@ -21,23 +21,39 @@
             <section consult="y" id="Signs_&amp;_symptoms" type="span" name="Signs &amp; symptoms" />
             <section consult="y" id="Symptoms_and_diagnosis" type="span" name="Symptoms and diagnosis" />
             <section consult="y" id="Symptoms_and_causes" type="span" name="Symptoms and causes" />
+            <section consult="y" id="References" type="span" name="References" />
         </sections>
         <special_sections consult="y" type="h2" class="mw-headline">
             <section consult="y" id="Symptoms_of_" type="span" name="Symptoms of " />
             <section consult="y" id="Causes_of_" type="span" name="Causes of " />
         </special_sections>
         <highlights consult="y">
-            <tag consult="y" id="content" class="mw-body" type="div" desc="principal" />
-            <tag consult="y" id="firstHeading" class="firstHeading" type="h1" desc="diseasename" />
-            <tag consult="y" id="mw-content-text" class="mw-content-ltr" type="div" desc="text" />
-            <tag consult="y" id="infobox" class="infobox" type="table" desc="infobox" />
-            <tag consult="y" id="wikitable" class="wikitable" type="table" desc="wikitable" />
-            <tag consult="y" id="toc" class="toc" type="div" desc="content" />
-            <tag consult="y" id="external text" class="external text" type="a" desc="externalresoruce" />
-            <tag consult="y" id="plainlist" class="plainlist" type="td" desc="plainlist" />
-            <tag consult="y" id="hlist" class="hlist" type="div" desc="horizontallist" />
-            <tag consult="y" id="hlist" class="hlist hlist-separated" type="div" desc="horizontallist_v1" />
-            <tag consult="y" id="text-align:center" class="style" type="css" desc="textaligncenter" />
+            <tag consult="y" id="content" class="mw-body" type="div" content_text="" desc="principal" />
+            <tag consult="y" id="firstHeading" class="firstHeading" type="h1" content_text="" desc="diseasename" />
+            <tag consult="y" id="mw-content-text" class="mw-content-ltr" type="div" content_text="" desc="text" />
+            <tag consult="y" id="infobox" class="infobox" type="table" content_text="" desc="infobox" />
+            <tag consult="y" id="synonyms" class="" type="th" content_text="Other names" desc="infobox_other_names" />
+            <tag consult="y" id="symptoms" class="" type="th" content_text="Symptoms" desc="infobox_symptoms" />
+            <tag consult="y" id="diagnostic_method" class="" type="th" content_text="Diagnostic method" desc="infobox_diagnostic_method" />
+            <tag consult="y" id="differential_diagnosis" class="" type="th" content_text="Differential diagnosis" desc="infobox_differential_diagnosis" />
+            <tag consult="y" id="causes" class="" type="th" content_text="Causes" desc="infobox_causes" />
+            <tag consult="y" id="frequency" class="" type="th" content_text="Frequency" desc="infobox_frequency" />
+            <tag consult="y" id="medication" class="" type="th" content_text="Medication" desc="infobox_medication" />
+            <tag consult="y" id="duration" class="" type="th" content_text="Duration" desc="infobox_duration" />
+            <tag consult="y" id="specialty" class="" type="th" content_text="Specialty" desc="infobox_specialty" />
+            <tag consult="y" id="complications" class="" type="th" content_text="Complications" desc="infobox_complications" />
+            <tag consult="y" id="wikitable" class="wikitable" type="table" content_text="" desc="wikitable" />
+            <tag consult="y" id="toc" class="toc" type="div" content_text="" desc="content" />
+            <tag consult="y" id="external text" class="external text" type="a" content_text="" desc="externalresoruce" />
+            <tag consult="y" id="plainlist" class="plainlist" type="td" content_text="" desc="plainlist" />
+            <tag consult="y" id="hlist" class="hlist" type="div" content_text="" desc="horizontallist" />
+            <tag consult="y" id="hlist" class="hlist hlist-separated" type="div" content_text="" desc="horizontallist_v1" />
+            <tag consult="y" id="wikidata_info" class="extiw" type="a" content_text="D" desc="horizontallist_wikidata_info" />
+            <tag consult="y" id="text-align:center" class="style" type="css" content_text="" desc="textaligncenter" />
+            <tag consult="y" id="wikimedia_related" class="mbox-text plainlist" type="td" content_text="" desc="wikimedia_commons_related_url" />
+
+            <tag consult="y" id="references" class="references" type="ol" content_text="" desc="list_of_references" />
+
         </highlights>
         <dump consult="y">
             <link consult="y" id="1">https://dumps.wikimedia.org/enwiki/</link>

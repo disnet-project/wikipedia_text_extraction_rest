@@ -129,6 +129,7 @@ public class Constants {
     public static final String XML_ATT_CLASS = "class";
     public static final String XML_ATT_NAME = "name";
     public static final String XML_ATT_DESC = "desc";
+    public static final String XML_ATT_CONTENT_TXT = "content_text";
 
 
     /**

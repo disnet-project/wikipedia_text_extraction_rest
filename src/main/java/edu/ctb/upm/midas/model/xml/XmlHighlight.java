@@ -14,6 +14,7 @@ public class XmlHighlight {
     private String id;
     private String class_;
     private String type;
+    private String contentText;
     private String description;
 
 
@@ -47,6 +48,15 @@ public class XmlHighlight {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+
+    public String getContentText() {
+        return contentText;
+    }
+
+    public void setContentText(String contentText) {
+        this.contentText = contentText;
     }
 
     public String getDescription() {
