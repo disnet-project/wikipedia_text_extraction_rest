@@ -316,13 +316,23 @@ public class ExtractionWikipedia {
                                                     textList.add(table);
                                                 }
                                             }
-                                        } else if (nextElementBro.tagName() == Constants.HTML_DIV) {
+                                        } else if (nextElementBro.tagName() ==  Constants.HTML_DIV) {
+
+                                        } else if (nextElementBro.tagName() == getHighlightXmlByDescription(Constants.XML_HL_DISEASENAME, xmlSource).getId() Constants.HTML_DIV) {
                                             //Verifica dentro del DIV si:
                                             boolean findList = verifyList(nextElementBro, isText, list_, countText, title, textList);
-                                            if (findList) {//System.out.println("ENTRA_insideDIVtoFindLists");
+                                            if (findList) {
+                                                System.out.println("ENTRA_insideDIVtoFindLists");
                                                 countText = textList.size();
                                                 isText = true;
                                             }
+
+                                            // Busca elementos en la sección de referencias
+                                            if (section.getDescription().equalsIgnoreCase("references") || section.getDescription().equalsIgnoreCase("notes")) {
+                                                System.out.println(section);
+                                                System.out.println(findList);
+                                            }
+
                                         }
 
                                         if (isText) {
@@ -451,7 +461,7 @@ public class ExtractionWikipedia {
         boolean res = false;
         Elements luChildrens = element.children();//System.out.println(element.toString() +" - " + nextElementBro.toString());
         for (Element childElement: luChildrens) {
-            if (childElement != null && (childElement.tagName() == Constants.HTML_UL || childElement.tagName() == Constants.HTML_OL) ){
+            if (childElement != null && (childElement.tagName() == Constants.HTML_UL || childElement.tagName() == Constants.HTML_OL) || childElement.tagName() == Constants.HTML_OL){
                 //System.out.println("ENTRA_3");
                 res = verifyExistList(childElement, isText, list_, countText, title, textList);
                 if (res){
@@ -1065,59 +1075,59 @@ public class ExtractionWikipedia {
         time_end = System.currentTimeMillis();
 
 
-        System.out.println("-------------------- EXTRACTION REPORT --------------------");
-        for (Source source :
-                sourceList) {
-
-            System.out.println("\n");
-            System.out.println("-------------------- SOURCE(" + source.getId() + "_" + source.getName() + ") --------------------");
-
-            for (Doc document: source.getDocuments()) {
-
-                System.out.println("Document(" + document.getId() + "_" + document.getDate() + ") => " + document.getUrl().getUrl());
-                System.out.println("    Disease(" + document.getDisease().getId() + "_" + document.getDisease().getName() + ") ");
-
-                System.out.println("    Codes list...:");
-                for (Code code:
-                        document.getCodeList()) {
-                    System.out.println("        Code_" + code.getId() + "[" + code.getResource().getName() + "]: " + code.getCode() + " URL_CODE:" + code.getLink().getUrl() );
-                }
-
-                for (Section section:
-                        document.getSectionList()) {
-                    System.out.println("    Section(" + section.getId() + ") " + section.getName() );
-
-                    for (Text text :
-                            section.getTextList()) {
-                        System.out.println("    ------------ TEXT(" + text.getTitle() + ") -----------");
-                        System.out.println("        Text_" + text.getTextOrder() + "(" + text.getId() + ") (" + text.getClass() + ")" );
-
-                        String aux = "";
-                        if(text instanceof Paragraph){
-                            System.out.println("            " + ( (Paragraph) text).getText() );
-                            countCharacteresList.add( ( (Paragraph) text).getText().length() );
-                        }else if(text instanceof List_){
-                            for (String bullet: ( (List_) text).getBulletList() ) {
-                                System.out.println("            -" + bullet);
-                                aux = aux + bullet + "&";
-                            }
-                            //if(aux.length() > 2){aux = aux.substring(0, aux.length()-1);}
-                            //System.out.println(" aux = " + aux);
-                            countCharacteresList.add( aux.length() );
-                        }
-
-                        System.out.println("        ------------ LINKS -----------");
-                        for (Link url:
-                                text.getUrlList()) {
-                            System.out.println("            Key: " + url.getId() + ": URL(" + url.getDescription() + "): " + url.getUrl() );
-                        }
-
-                    }
-                }
-
-            }
-
-        }
+//        System.out.println("-------------------- EXTRACTION REPORT --------------------");
+//        for (Source source :
+//                sourceList) {
+//
+//            System.out.println("\n");
+//            System.out.println("-------------------- SOURCE(" + source.getId() + "_" + source.getName() + ") --------------------");
+//
+//            for (Doc document: source.getDocuments()) {
+//
+//                System.out.println("Document(" + document.getId() + "_" + document.getDate() + ") => " + document.getUrl().getUrl());
+//                System.out.println("    Disease(" + document.getDisease().getId() + "_" + document.getDisease().getName() + ") ");
+//
+//                System.out.println("    Codes list...:");
+//                for (Code code:
+//                        document.getCodeList()) {
+//                    System.out.println("        Code_" + code.getId() + "[" + code.getResource().getName() + "]: " + code.getCode() + " URL_CODE:" + code.getLink().getUrl() );
+//                }
+//
+//                for (Section section:
+//                        document.getSectionList()) {
+//                    System.out.println("    Section(" + section.getId() + ") " + section.getName() );
+//
+//                    for (Text text :
+//                            section.getTextList()) {
+//                        System.out.println("    ------------ TEXT(" + text.getTitle() + ") -----------");
+//                        System.out.println("        Text_" + text.getTextOrder() + "(" + text.getId() + ") (" + text.getClass() + ")" );
+//
+//                        String aux = "";
+//                        if(text instanceof Paragraph){
+//                            System.out.println("            " + ( (Paragraph) text).getText() );
+//                            countCharacteresList.add( ( (Paragraph) text).getText().length() );
+//                        }else if(text instanceof List_){
+//                            for (String bullet: ( (List_) text).getBulletList() ) {
+//                                System.out.println("            -" + bullet);
+//                                aux = aux + bullet + "&";
+//                            }
+//                            //if(aux.length() > 2){aux = aux.substring(0, aux.length()-1);}
+//                            //System.out.println(" aux = " + aux);
+//                            countCharacteresList.add( aux.length() );
+//                        }
+//
+//                        System.out.println("        ------------ LINKS -----------");
+//                        for (Link url:
+//                                text.getUrlList()) {
+//                            System.out.println("            Key: " + url.getId() + ": URL(" + url.getDescription() + "): " + url.getUrl() );
+//                        }
+//
+//                    }
+//                }
+//
+//            }
+//
+//        }
 
 
 

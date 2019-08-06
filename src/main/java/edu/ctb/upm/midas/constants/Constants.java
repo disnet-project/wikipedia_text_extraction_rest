@@ -69,6 +69,7 @@ public class Constants {
     public static final String HTML_LI = "li";
     public static final String HTML_UL = "ul";
     public static final String HTML_OL = "ol";
+    public static final String HTML_DL = "dl";
     public static final String HTML_IMG = "img";
     public static final String HTML_ALT = "alt";
     public static final String HTML_A = "a";
@@ -83,6 +84,8 @@ public class Constants {
     public static final String HTML_TABLE_TR = "tr";
     public static final String HTML_TABLE_TH = "th";
     public static final String HTML_TABLE_TD = "td";
+
+    public static final String HTML_REF = "references";
 
     public static final List<String> HTML_LIST_TAG_PARENTS_LIST_TAG = new ArrayList<String>(){{
         add("ul");

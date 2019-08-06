@@ -22,6 +22,7 @@
             <section consult="y" id="Symptoms_and_diagnosis" type="span" name="Symptoms and diagnosis" />
             <section consult="y" id="Symptoms_and_causes" type="span" name="Symptoms and causes" />
             <section consult="y" id="References" type="span" name="References" />
+            <section consult="y" id="Notes" type="span" name="Notes" />
         </sections>
         <special_sections consult="y" type="h2" class="mw-headline">
             <section consult="y" id="Symptoms_of_" type="span" name="Symptoms of " />
@@ -32,6 +33,7 @@
             <tag consult="y" id="firstHeading" class="firstHeading" type="h1" content_text="" desc="diseasename" />
             <tag consult="y" id="mw-content-text" class="mw-content-ltr" type="div" content_text="" desc="text" />
             <tag consult="y" id="infobox" class="infobox" type="table" content_text="" desc="infobox" />
+
             <tag consult="y" id="synonyms" class="" type="th" content_text="Other names" desc="infobox_other_names" />
             <tag consult="y" id="symptoms" class="" type="th" content_text="Symptoms" desc="infobox_symptoms" />
             <tag consult="y" id="diagnostic_method" class="" type="th" content_text="Diagnostic method" desc="infobox_diagnostic_method" />
@@ -42,6 +44,7 @@
             <tag consult="y" id="duration" class="" type="th" content_text="Duration" desc="infobox_duration" />
             <tag consult="y" id="specialty" class="" type="th" content_text="Specialty" desc="infobox_specialty" />
             <tag consult="y" id="complications" class="" type="th" content_text="Complications" desc="infobox_complications" />
+
             <tag consult="y" id="wikitable" class="wikitable" type="table" content_text="" desc="wikitable" />
             <tag consult="y" id="toc" class="toc" type="div" content_text="" desc="content" />
             <tag consult="y" id="external text" class="external text" type="a" content_text="" desc="externalresoruce" />
@@ -59,10 +62,12 @@
             <link consult="y" id="1">https://dumps.wikimedia.org/enwiki/</link>
         </dump>
         <links consult="y">
+
+            <link consult="y" id="1">https://en.wikipedia.org/wiki/Cancer</link>
             <link consult="y" id="1">https://en.wikipedia.org/wiki/Spider_bite</link>
             <link consult="y" id="1">https://en.wikipedia.org/wiki/Snapping_hip_syndrome</link>
-            <link consult="y" id="1">https://en.wikipedia.org/wiki/Hematocolpos</link>
-            <!--<link consult="y" id="1">https://en.wikipedia.org/wiki/Bone_fracture</link>
+            <!--<link consult="y" id="1">https://en.wikipedia.org/wiki/Hematocolpos</link>
+            <link consult="y" id="1">https://en.wikipedia.org/wiki/Bone_fracture</link>
             <link consult="y" id="1">http://en.wikipedia.org/wiki/Polyarteritis_nodosa</link>
             <link consult="y" id="2">https://en.wikipedia.org/wiki/Cystinuria</link>
             <link consult="y" id="5305">en.wikipedia.org/wiki/Infarction</link>-->
