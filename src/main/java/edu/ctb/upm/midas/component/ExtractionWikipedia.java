@@ -316,13 +316,12 @@ public class ExtractionWikipedia {
                                                     textList.add(table);
                                                 }
                                             }
-                                        } else if (nextElementBro.tagName() ==  Constants.HTML_DIV) {
-
-                                        } else if (nextElementBro.tagName() == getHighlightXmlByDescription(Constants.XML_HL_DISEASENAME, xmlSource).getId() Constants.HTML_DIV) {
+                                        //} else if (nextElementBro.tagName() ==  Constants.HTML_DIV) {
+                                        } else if (nextElementBro.tagName().equalsIgnoreCase(Constants.HTML_DIV)) {
                                             //Verifica dentro del DIV si:
                                             boolean findList = verifyList(nextElementBro, isText, list_, countText, title, textList);
                                             if (findList) {
-                                                System.out.println("ENTRA_insideDIVtoFindLists");
+                                                //System.out.println("ENTRA_insideDIVtoFindLists");
                                                 countText = textList.size();
                                                 isText = true;
                                             }
