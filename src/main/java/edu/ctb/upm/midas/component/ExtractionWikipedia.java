@@ -208,6 +208,10 @@ public class ExtractionWikipedia {
                         }*/
                             //</editor-fold>
 
+                            //<editor-fold desc="EXTRAER REFERENCIAS DEL DOCUMENTO">
+                            extracReferences(doc, xmlSource, document);
+                            //</editor-fold>
+
                             // Crea lista de secciones
                             sectionList = new ArrayList<>();
                             countSections = 1;
@@ -305,7 +309,7 @@ public class ExtractionWikipedia {
                                             //</editor-fold>
                                             //Extrae el texto si es una etiqueta <table> y class="wikitable"
                                         } else if (nextElementBro.tagName() == Constants.HTML_TABLE) {
-                                            Elements trs = nextElementBro.select("table.wikitable tr");
+                                            Elements trs = nextElementBro.select(Constants.HTML_TABLE + Constants.DOT + getHighlightXmlByDescription("wikitable", xmlSource).getClass_() + " " + Constants.HTML_TABLE_TR);//"table.wikitable tr"
                                             if (trs != null) {
                                                 //System.out.println("Wikitable" + trs.toString());
                                                 // Guarda la información extraida de una wikitable en un objeto
@@ -325,13 +329,6 @@ public class ExtractionWikipedia {
                                                 countText = textList.size();
                                                 isText = true;
                                             }
-
-                                            // Busca elementos en la sección de referencias
-                                            if (section.getDescription().equalsIgnoreCase("references") || section.getDescription().equalsIgnoreCase("notes")) {
-                                                System.out.println(section);
-                                                System.out.println(findList);
-                                            }
-
                                         }
 
                                         if (isText) {
@@ -400,6 +397,60 @@ public class ExtractionWikipedia {
         // Retorna la lista de fuentes, con sus documentos, enfermedades, secciones, códigos y textos...
         return sourceList;
 
+    }
+
+
+    public void extracReferences(Doc document, XmlSource xmlSource, Document webDocument){
+
+        //En busca de las referencias
+        Elements referenceElements = webDocument.getElementsByClass(getHighlightXmlById("references", xmlSource).getClass_()).select(Constants.HTML_LI); // .select("");
+        if (referenceElements!=null) {
+            int refCount = 1;
+            for (Element liElement : referenceElements) {
+                Reference reference = new Reference();
+
+
+                reference.setId(refCount);
+                reference.setReferenceId(liElement.id());
+                reference.setType(getReferenceType(liElement));
+                reference.setText(getReferenceText(liElement));
+                System.out.println(refCount + ". " + liElement.id() + " " + getReferenceType(liElement) + " " + getReferenceText(liElement));
+                //System.out.println("1. " + liElement.toString());
+
+                refCount++;
+            }
+        }
+
+    }
+
+
+    public String getReferenceType(Element liElement){
+        Elements cites = liElement.getElementsByTag(Constants.HTML_CITE);
+        String refType = "";
+        for (Element cite: cites) {
+            refType = cite.className();
+        }
+        return refType;
+    }
+
+
+    public String getReferenceText(Element liElement){
+        Elements cites = liElement.getElementsByTag(Constants.HTML_CITE);
+        String text = "";
+        for (Element cite: cites) {
+            text = cite.text();
+        }
+        return text;
+    }
+
+
+    public String getReferenceLinks(Element liElement){
+        Elements cites = liElement.getElementsByTag(Constants.HTML_CITE);
+        String text = "";
+        for (Element cite: cites) {
+            text = cite.text();
+        }
+        return text;
     }
 
 
@@ -1343,6 +1394,31 @@ public class ExtractionWikipedia {
         for (XmlHighlight oHighlight:
              xmlSource.getHighlightList()) {
             if( oHighlight.getDescription().equals(description) ){
+                xmlHighlight = oHighlight;
+                return xmlHighlight;
+            }
+        }
+        return xmlHighlight;
+    }
+
+
+    /**
+     * Método que consulta los elementos relevantes (Highlight) en el XML según su id
+     *
+     * Con el fin de hacer consultas JSOUP más complejas valiendose de elementos importantes del documento
+     * como lo puede ser la clase de los infobox o clases de lista que contienen códigos interesantes
+     *
+     * Ej, de descripción: diseasename, infobox, externalresource... ver etiqueta highlight de sources.xml
+     *
+     * @param id
+     * @param xmlSource
+     * @return objeto XmlHighlight
+     */
+    public XmlHighlight getHighlightXmlById(String id, XmlSource xmlSource){
+        XmlHighlight xmlHighlight = null;
+        for (XmlHighlight oHighlight:
+                xmlSource.getHighlightList()) {
+            if( oHighlight.getId().equals(id) ){
                 xmlHighlight = oHighlight;
                 return xmlHighlight;
             }

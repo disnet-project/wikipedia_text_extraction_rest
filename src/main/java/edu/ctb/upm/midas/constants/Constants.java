@@ -86,6 +86,7 @@ public class Constants {
     public static final String HTML_TABLE_TD = "td";
 
     public static final String HTML_REF = "references";
+    public static final String HTML_CITE = "cite";
 
     public static final List<String> HTML_LIST_TAG_PARENTS_LIST_TAG = new ArrayList<String>(){{
         add("ul");
