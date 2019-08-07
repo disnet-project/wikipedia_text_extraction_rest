@@ -56,6 +56,8 @@
             <tag consult="y" id="wikimedia_related" class="mbox-text plainlist" type="td" content_text="" desc="wikimedia_commons_related_url" />
 
             <tag consult="y" id="references" class="references" type="ol" content_text="" desc="list_of_references" />
+            <tag consult="y" id="reference_class" class="reference-text" type="span" content_text="" desc="reference_text_class" />
+            <tag consult="y" id="mw-cite-backlink" class="mw-cite-backlink" type="span" content_text="" desc="backlink_list" />
 
         </highlights>
         <dump consult="y">

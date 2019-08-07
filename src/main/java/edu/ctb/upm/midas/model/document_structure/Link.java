@@ -77,4 +77,14 @@ public class Link {
     public int hashCode() {
         return Objects.hash(getUrl());
     }
+
+    @Override
+    public String toString() {
+        return "Link{" +
+                "id=" + id +
+                ", url='" + url + '\'' +
+                ", description='" + description + '\'' +
+                ", source=" + source +
+                '}';
+    }
 }

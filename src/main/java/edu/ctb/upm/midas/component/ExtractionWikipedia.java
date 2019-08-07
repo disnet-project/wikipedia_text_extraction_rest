@@ -209,7 +209,12 @@ public class ExtractionWikipedia {
                             //</editor-fold>
 
                             //<editor-fold desc="EXTRAER REFERENCIAS DEL DOCUMENTO">
-                            extracReferences(doc, xmlSource, document);
+                            List<Reference> referenceList = extracReferences(doc, xmlSource, document);
+                            if(referenceList!=null){
+                                if (referenceList.size()>0){
+                                    doc.setReferenceList(referenceList);
+                                }
+                            }
                             //</editor-fold>
 
                             // Crea lista de secciones
@@ -400,8 +405,8 @@ public class ExtractionWikipedia {
     }
 
 
-    public void extracReferences(Doc document, XmlSource xmlSource, Document webDocument){
-
+    public List<Reference> extracReferences(Doc document, XmlSource xmlSource, Document webDocument){
+        List<Reference> referenceList = new ArrayList<>();
         //En busca de las referencias
         Elements referenceElements = webDocument.getElementsByClass(getHighlightXmlById("references", xmlSource).getClass_()).select(Constants.HTML_LI); // .select("");
         if (referenceElements!=null) {
@@ -409,48 +414,87 @@ public class ExtractionWikipedia {
             for (Element liElement : referenceElements) {
                 Reference reference = new Reference();
 
-
                 reference.setId(refCount);
                 reference.setReferenceId(liElement.id());
-                reference.setType(getReferenceType(liElement));
-                reference.setText(getReferenceText(liElement));
-                System.out.println(refCount + ". " + liElement.id() + " " + getReferenceType(liElement) + " " + getReferenceText(liElement));
-                //System.out.println("1. " + liElement.toString());
+                reference.setType(getReferenceType(liElement, xmlSource));
+                reference.setText(getReferenceText(liElement, xmlSource));
+                reference.setTextLinks(getReferenceLinks(liElement, xmlSource));
+                reference.setBackLinks(getBackLinkList(liElement, xmlSource));
+//                System.out.println(reference);
+                referenceList.add(reference);
 
                 refCount++;
             }
         }
 
+        return referenceList;
+
     }
 
 
-    public String getReferenceType(Element liElement){
+    public String getReferenceType(Element liElement, XmlSource xmlSource){
         Elements cites = liElement.getElementsByTag(Constants.HTML_CITE);
         String refType = "";
-        for (Element cite: cites) {
-            refType = cite.className();
+//        System.out.println(cites.text());
+        if (!cites.text().equals("")) {
+            for (Element cite : cites) {
+                refType = cite.className();break;
+            }
+        }else{
+//            System.out.println(liElement.text());
+            Elements spanCite = liElement.getElementsByClass(getHighlightXmlById("reference_class", xmlSource).getClass_());
+            for (Element cite : spanCite) {
+                refType = cite.className();break;
+            }
         }
         return refType;
     }
 
 
-    public String getReferenceText(Element liElement){
+    public String getReferenceText(Element liElement, XmlSource xmlSource){
         Elements cites = liElement.getElementsByTag(Constants.HTML_CITE);
         String text = "";
-        for (Element cite: cites) {
-            text = cite.text();
+        if (!cites.text().equals("")) {
+            for (Element cite: cites) {
+                text = cite.text();break;
+            }
+        }else{
+            Elements spanCite = liElement.getElementsByClass(getHighlightXmlById("reference_class", xmlSource).getClass_());
+            for (Element cite : spanCite) {
+                text = cite.text();break;
+            }
         }
         return text;
     }
 
 
-    public String getReferenceLinks(Element liElement){
+    public List<Link> getReferenceLinks(Element liElement, XmlSource xmlSource){
+        List<Link> linkList = new ArrayList<>();
         Elements cites = liElement.getElementsByTag(Constants.HTML_CITE);
-        String text = "";
-        for (Element cite: cites) {
-            text = cite.text();
+        if (!cites.text().equals("")) {
+            for (Element cite : cites) {
+//            Elements links = cite.select(Constants.QUERY_A_HREF);
+                linkList = getTextUrls(cite);
+                break;
+            }
+        }else{
+            Elements spanCite = liElement.getElementsByClass(getHighlightXmlById("reference_class", xmlSource).getClass_());
+            for (Element cite : spanCite) {
+                linkList = getTextUrls(cite);break;
+            }
         }
-        return text;
+        return linkList;
+    }
+
+
+    public List<Link> getBackLinkList(Element liElement, XmlSource xmlSource){
+        List<Link> linkList = new ArrayList<>();
+        Elements backLinks = liElement.getElementsByClass(getHighlightXmlByDescription("backlink_list", xmlSource).getClass_());
+        for (Element backLink: backLinks) {
+//            Elements links = cite.select(Constants.QUERY_A_HREF);
+            linkList = getTextUrls(backLink);break;
+        }
+        return linkList;
     }
 
 
@@ -1125,59 +1169,66 @@ public class ExtractionWikipedia {
         time_end = System.currentTimeMillis();
 
 
-//        System.out.println("-------------------- EXTRACTION REPORT --------------------");
-//        for (Source source :
-//                sourceList) {
-//
-//            System.out.println("\n");
-//            System.out.println("-------------------- SOURCE(" + source.getId() + "_" + source.getName() + ") --------------------");
-//
-//            for (Doc document: source.getDocuments()) {
-//
-//                System.out.println("Document(" + document.getId() + "_" + document.getDate() + ") => " + document.getUrl().getUrl());
-//                System.out.println("    Disease(" + document.getDisease().getId() + "_" + document.getDisease().getName() + ") ");
-//
-//                System.out.println("    Codes list...:");
-//                for (Code code:
-//                        document.getCodeList()) {
-//                    System.out.println("        Code_" + code.getId() + "[" + code.getResource().getName() + "]: " + code.getCode() + " URL_CODE:" + code.getLink().getUrl() );
-//                }
-//
-//                for (Section section:
-//                        document.getSectionList()) {
-//                    System.out.println("    Section(" + section.getId() + ") " + section.getName() );
-//
-//                    for (Text text :
-//                            section.getTextList()) {
-//                        System.out.println("    ------------ TEXT(" + text.getTitle() + ") -----------");
-//                        System.out.println("        Text_" + text.getTextOrder() + "(" + text.getId() + ") (" + text.getClass() + ")" );
-//
-//                        String aux = "";
-//                        if(text instanceof Paragraph){
-//                            System.out.println("            " + ( (Paragraph) text).getText() );
-//                            countCharacteresList.add( ( (Paragraph) text).getText().length() );
-//                        }else if(text instanceof List_){
-//                            for (String bullet: ( (List_) text).getBulletList() ) {
-//                                System.out.println("            -" + bullet);
-//                                aux = aux + bullet + "&";
-//                            }
-//                            //if(aux.length() > 2){aux = aux.substring(0, aux.length()-1);}
-//                            //System.out.println(" aux = " + aux);
-//                            countCharacteresList.add( aux.length() );
-//                        }
-//
-//                        System.out.println("        ------------ LINKS -----------");
-//                        for (Link url:
-//                                text.getUrlList()) {
-//                            System.out.println("            Key: " + url.getId() + ": URL(" + url.getDescription() + "): " + url.getUrl() );
-//                        }
-//
-//                    }
-//                }
-//
-//            }
-//
-//        }
+        System.out.println("-------------------- EXTRACTION REPORT --------------------");
+        for (Source source :
+                sourceList) {
+
+            System.out.println("\n");
+            System.out.println("-------------------- SOURCE(" + source.getId() + "_" + source.getName() + ") --------------------");
+
+            for (Doc document: source.getDocuments()) {
+
+                System.out.println("Document(" + document.getId() + "_" + document.getDate() + ") => " + document.getUrl().getUrl());
+                System.out.println("    Disease(" + document.getDisease().getId() + "_" + document.getDisease().getName() + ") ");
+
+
+                System.out.println("    Reference list...:");
+                for (Reference reference: document.getReferenceList()) {
+                    System.out.println("        Reference_" + reference.getId() + ": " + reference.getReferenceId() + "[" + reference.getType() + "]: " + reference.getText() + " URL:" + reference.getTextLinks() );
+                }
+
+
+                System.out.println("    Codes list...:");
+                for (Code code:
+                        document.getCodeList()) {
+                    System.out.println("        Code_" + code.getId() + "[" + code.getResource().getName() + "]: " + code.getCode() + " URL_CODE:" + code.getLink().getUrl() );
+                }
+
+                for (Section section:
+                        document.getSectionList()) {
+                    System.out.println("    Section(" + section.getId() + ") " + section.getName() );
+
+                    for (Text text :
+                            section.getTextList()) {
+                        System.out.println("    ------------ TEXT(" + text.getTitle() + ") -----------");
+                        System.out.println("        Text_" + text.getTextOrder() + "(" + text.getId() + ") (" + text.getClass() + ")" );
+
+                        String aux = "";
+                        if(text instanceof Paragraph){
+                            System.out.println("            " + ( (Paragraph) text).getText() );
+                            countCharacteresList.add( ( (Paragraph) text).getText().length() );
+                        }else if(text instanceof List_){
+                            for (String bullet: ( (List_) text).getBulletList() ) {
+                                System.out.println("            -" + bullet);
+                                aux = aux + bullet + "&";
+                            }
+                            //if(aux.length() > 2){aux = aux.substring(0, aux.length()-1);}
+                            //System.out.println(" aux = " + aux);
+                            countCharacteresList.add( aux.length() );
+                        }
+
+                        System.out.println("        ------------ LINKS -----------");
+                        for (Link url:
+                                text.getUrlList()) {
+                            System.out.println("            Key: " + url.getId() + ": URL(" + url.getDescription() + "): " + url.getUrl() );
+                        }
+
+                    }
+                }
+
+            }
+
+        }
 
 
 

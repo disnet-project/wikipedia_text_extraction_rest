@@ -59,4 +59,17 @@ public class Reference {
     public void setTextLinks(List<Link> textLinks) {
         this.textLinks = textLinks;
     }
+
+
+    @Override
+    public String toString() {
+        return "Reference{" +
+                "id=" + id +
+                ", referenceId='" + referenceId + '\'' +
+                ", text='" + text + '\'' +
+                ", type='" + type + '\'' +
+                ", backLinks=" + backLinks +
+                ", textLinks=" + textLinks +
+                '}';
+    }
 }
