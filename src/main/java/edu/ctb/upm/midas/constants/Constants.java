@@ -145,6 +145,9 @@ public class Constants {
     public static final String XML_HL_PLAIN_LIST = "plainlist";
     public static final String XML_HL_HORIZONTAL_LIST = "horizontallist";
     public static final String XML_HL_TEXT_ALIGN_CENTER = "textaligncenter";
+    public static final String XML_ATT_CLASS_REFERENCE = "reference_class";
+    public static final String XML_REFERENCE_BACKLIST = "backlink_list";
+
 
 
     /**

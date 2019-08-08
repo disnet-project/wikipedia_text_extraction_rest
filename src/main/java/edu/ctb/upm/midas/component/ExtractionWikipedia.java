@@ -442,7 +442,7 @@ public class ExtractionWikipedia {
             }
         }else{
 //            System.out.println(liElement.text());
-            Elements spanCite = liElement.getElementsByClass(getHighlightXmlById("reference_class", xmlSource).getClass_());
+            Elements spanCite = liElement.getElementsByClass(getHighlightXmlById(Constants.XML_ATT_CLASS_REFERENCE, xmlSource).getClass_());
             for (Element cite : spanCite) {
                 refType = cite.className();break;
             }
@@ -459,7 +459,7 @@ public class ExtractionWikipedia {
                 text = cite.text();break;
             }
         }else{
-            Elements spanCite = liElement.getElementsByClass(getHighlightXmlById("reference_class", xmlSource).getClass_());
+            Elements spanCite = liElement.getElementsByClass(getHighlightXmlById(Constants.XML_ATT_CLASS_REFERENCE, xmlSource).getClass_());
             for (Element cite : spanCite) {
                 text = cite.text();break;
             }
@@ -478,7 +478,7 @@ public class ExtractionWikipedia {
                 break;
             }
         }else{
-            Elements spanCite = liElement.getElementsByClass(getHighlightXmlById("reference_class", xmlSource).getClass_());
+            Elements spanCite = liElement.getElementsByClass(getHighlightXmlById(Constants.XML_ATT_CLASS_REFERENCE, xmlSource).getClass_());
             for (Element cite : spanCite) {
                 linkList = getTextUrls(cite);break;
             }
@@ -489,7 +489,7 @@ public class ExtractionWikipedia {
 
     public List<Link> getBackLinkList(Element liElement, XmlSource xmlSource){
         List<Link> linkList = new ArrayList<>();
-        Elements backLinks = liElement.getElementsByClass(getHighlightXmlByDescription("backlink_list", xmlSource).getClass_());
+        Elements backLinks = liElement.getElementsByClass(getHighlightXmlByDescription(Constants.XML_REFERENCE_BACKLIST, xmlSource).getClass_());
         for (Element backLink: backLinks) {
 //            Elements links = cite.select(Constants.QUERY_A_HREF);
             linkList = getTextUrls(backLink);break;
