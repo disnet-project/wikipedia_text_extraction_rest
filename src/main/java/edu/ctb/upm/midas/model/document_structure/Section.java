@@ -71,8 +71,8 @@ public class Section {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-//                ", textCount=" + textCount +
-//                ", textList=" + textList +
+                ", textCount=" + textCount +
+                ", textList=" + textList +
                 '}';
     }
 }

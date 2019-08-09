@@ -100,6 +100,27 @@ public class Constants {
         add("dd");
     }};
 
+    public static final List<String> INFOBOX_ELEMENTS = new ArrayList<String>(){{
+        add("Other names");
+        add("synonym");
+        add("Specialty");
+        add("Symptoms");
+        add("Complications");
+        add("Usual onset");
+        add("Duration");
+        add("Types");
+        add("Causes");
+        add("Risk factors");
+        add("Diagnostic method");
+        add("Differential diagnosis");
+        add("Prevention");
+        add("Treatment");
+        add("Medication");
+        add("Prognosis");
+        add("Frequency");
+        add("Deaths");
+    }};
+
     /** CONSULTAS BIBLIOTECA JSOUP */
     public static final String QUERY_A_HREF = "a[href]";
     public static final String QUERY_A_CLASS = "a[class=";

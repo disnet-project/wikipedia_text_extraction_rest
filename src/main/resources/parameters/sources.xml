@@ -21,6 +21,7 @@
             <section consult="y" id="Signs_&amp;_symptoms" type="span" name="Signs &amp; symptoms" />
             <section consult="y" id="Symptoms_and_diagnosis" type="span" name="Symptoms and diagnosis" />
             <section consult="y" id="Symptoms_and_causes" type="span" name="Symptoms and causes" />
+            <section consult="y" id="Infobox" type="table" name="infobox" />
             <!--<section consult="y" id="References" type="span" name="References" />-->
             <!--<section consult="y" id="Notes" type="span" name="Notes" />-->
         </sections>
@@ -67,6 +68,7 @@
             <link consult="y" id="1">https://en.wikipedia.org/wiki/Acrodynia</link>
             <link consult="y" id="1">https://en.wikipedia.org/wiki/Spider_bite</link>
             <link consult="y" id="1">https://en.wikipedia.org/wiki/Snapping_hip_syndrome</link>
+            <link consult="y" id="1">https://en.wikipedia.org/wiki/Influenza</link>
             <!--<link consult="y" id="1">https://en.wikipedia.org/wiki/Hematocolpos</link>
             <link consult="y" id="1">https://en.wikipedia.org/wiki/Cancer</link>
             <link consult="y" id="1">https://en.wikipedia.org/wiki/Bone_fracture</link>

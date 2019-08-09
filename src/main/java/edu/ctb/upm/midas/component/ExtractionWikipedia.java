@@ -245,9 +245,19 @@ public class ExtractionWikipedia {
                                 // Encuentra y almacena una sección <h2>
                                 //System.out.println(xmlSection.getId());
                                 Element sectionElement = document.getElementById(xmlSection.getId()); //One section is returned!
+                                if (xmlSection.getId().equalsIgnoreCase(Constants.XML_HL_INFOBOX))
+                                    sectionElement = document.getElementsByClass(xmlSection.getId()).first(); //One section is returned!
+
                                 //<editor-fold desc="PROCESO SOBRE LOS ELEMENTOS DE UNA SECCIÓN">
                                 // Validar que la sección fue encontrada y tiene información
-                                if (sectionElement != null) {
+                                if (sectionElement != null /*&& sectionElement.tagName().equalsIgnoreCase(Constants.HTML_H2)*/) {
+                                    //descartar las <h3> porque son subsecciones de las <h2>
+                                    // esto de ha derivado de que hay subsecciones con id y nombres iguales de
+                                    //algunas secciones, por ejemplo, en la influenza, se tiene
+                                    //Symptoms of influenza como subsección y en el XML por su configuración se busca
+                                    //este nombre por el id de la sección que coincide generando textos duplicados
+                                    if (sectionElement.parent().tagName().equalsIgnoreCase(Constants.HTML_H3)) continue;
+                                    //System.out.println("section parent tag name: ("+sectionElement.text()+")" + sectionElement.parent().tagName().toString());
                                     // Crea una lista de textos
                                     textList = new ArrayList<>();
                                     isSection = true;
@@ -256,7 +266,8 @@ public class ExtractionWikipedia {
                                     // Almacena la información de una sección
                                     section.setId(countSections);
                                     section.setName(xmlSection.getId());
-                                    section.setDescription(sectionElement.text().trim());
+                                    section.setDescription((xmlSection.getId().equalsIgnoreCase(Constants.XML_HL_INFOBOX))?xmlSection.getName():sectionElement.text().trim());
+                                    //System.out.println(section.getName());
 
                                     //System.out.println(sectionElement);
                                     //System.out.println(sectionElement.parent());
@@ -293,6 +304,7 @@ public class ExtractionWikipedia {
                                             //<editor-fold desc="EXTRAE TEXTO DE UN PARRAFO Y LO ALMACENA EN UN OBJETO PARAGRAPH">
                                             // Guarda la información extraida de un párrafo wikipedia en un objeto
                                             // Se crea un párrafo y se extrae su información
+
                                             paragraph = setParagraphData(nextElementBro, countText, title);
                                             if (paragraph != null) {//System.out.println("ENTRA_paragraph");
                                                 isText = true;
@@ -345,6 +357,20 @@ public class ExtractionWikipedia {
                                         //if (i == 100) break;  i++;
                                     }//end while (nextElementBro != null && nextElementBro.tagName() != "h2")
                                     //</editor-fold>
+
+                                    //<editor-fold desc="SECCIÓN INFOBOX">
+                                    //Se agrega una última sección que es el infobox (al principio del documentos), si
+                                    // es que existe
+                                    if (section.getName().equalsIgnoreCase(Constants.XML_HL_INFOBOX)){
+                                        sectionElement = document.getElementsByClass(xmlSection.getId()).first();
+                                        int textCount = 1;
+                                        Table infoboxTable = extractInfoboxTexts(sectionElement.select(Constants.HTML_TABLE_TR), textCount, "infobox");
+                                        textList.add(infoboxTable);
+//                                        System.out.println("extCount: " + textCount + " - SECTION - " + section);
+                                        //System.out.println("ENTRA a infobox " + sectionElement.text());
+                                    }
+                                    //</editor-fold>
+
 
                                     section.setTextList(textList);
                                     section.setTextCount(section.getTextList().size());
@@ -402,6 +428,20 @@ public class ExtractionWikipedia {
         // Retorna la lista de fuentes, con sus documentos, enfermedades, secciones, códigos y textos...
         return sourceList;
 
+    }
+
+
+
+
+
+    private boolean isInfoboxElement(String infoboxElement) {
+        for (int i = 0; i < Constants.INFOBOX_ELEMENTS.size(); i++) {
+            String validElement = Constants.INFOBOX_ELEMENTS.get(i);
+            if (infoboxElement.contains(validElement)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 
@@ -1183,9 +1223,10 @@ public class ExtractionWikipedia {
 
 
                 System.out.println("    Reference list...:");
-                for (Reference reference: document.getReferenceList()) {
-                    System.out.println("        Reference_" + reference.getId() + ": " + reference.getReferenceId() + "[" + reference.getType() + "]: " + reference.getText() + " URL:" + reference.getTextLinks() );
-                }
+                System.out.println("        Reference_size: " + document.getReferenceList().size());
+//                for (Reference reference: document.getReferenceList()) {
+//                    System.out.println("        Reference_" + reference.getId() + ": " + reference.getReferenceId() + "[" + reference.getType() + "]: " + reference.getText() + " URL:" + reference.getTextLinks() );
+//                }
 
 
                 System.out.println("    Codes list...:");
@@ -1215,6 +1256,11 @@ public class ExtractionWikipedia {
                             //if(aux.length() > 2){aux = aux.substring(0, aux.length()-1);}
                             //System.out.println(" aux = " + aux);
                             countCharacteresList.add( aux.length() );
+                        }else if(text instanceof Table){
+                            for (String tr: ( (Table) text).getTrList() ) {
+                                System.out.println("            -" + tr);
+                                aux = aux + tr + "&";
+                            }
                         }
 
                         System.out.println("        ------------ LINKS -----------");
@@ -1349,6 +1395,36 @@ public class ExtractionWikipedia {
             // Agrega la lista de enlaces al objeto lista "List_"
             table.setUrlList( getTableTextUrls( trElements ) );
         }
+        return table;
+    }
+
+
+    public Table extractInfoboxTexts(Elements trElements, int countText, String title){
+        Table table = null;
+        String head = "";
+        String body = "";
+
+        if (trElements!=null) {
+            List<String> trList = new ArrayList<>();
+            for (Element trElement : trElements) {
+                //System.out.println(trElement.toString());
+                Elements thElement = trElement.select(Constants.HTML_TABLE_TH);
+                if (isInfoboxElement(thElement.text())) {
+                    Element tdElement = trElement.select(Constants.HTML_TABLE_TD).first();
+                    trList.add(thElement.text() + " :=> " + tdElement.text());
+//                    System.out.println(thElement.text() + " :=> " + tdElement.text());
+                }
+            }
+
+            table = new Table();
+            table.setId(countText);
+            table.setTextOrder(countText);
+            table.setTitle(title);
+            table.setTrList(trList);
+            // Agrega la lista de enlaces al objeto lista "List_"
+            table.setUrlList( getTableTextUrls( trElements ) );
+        }
+
         return table;
     }
 
