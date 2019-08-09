@@ -28,7 +28,6 @@ public class Doc {
     private Integer codeCount;
     private List<Code> codeList;
     private List<Reference> referenceList;
-    private Infobox infobox;
 
 
     public Doc() {
@@ -123,11 +122,4 @@ public class Doc {
         this.referenceList = referenceList;
     }
 
-    public Infobox getInfobox() {
-        return infobox;
-    }
-
-    public void setInfobox(Infobox infobox) {
-        this.infobox = infobox;
-    }
 }
