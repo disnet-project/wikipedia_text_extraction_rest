@@ -32,6 +32,8 @@ public class DocJSON {
     private Integer codeCount;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Code> codeList;
+    private List<Reference> referenceList;
+
 
 
     public DocJSON() {
@@ -137,6 +139,14 @@ public class DocJSON {
 
     public void setCodeList(List<Code> codeList) {
         this.codeList = codeList;
+    }
+
+    public List<Reference> getReferenceList() {
+        return referenceList;
+    }
+
+    public void setReferenceList(List<Reference> referenceList) {
+        this.referenceList = referenceList;
     }
 
     @Override
