@@ -65,6 +65,7 @@
             <link consult="y" id="1">https://dumps.wikimedia.org/enwiki/</link>
         </dump>
         <links consult="y">
+            <link consult="y" id="1">https://en.wikipedia.org/wiki/Medication-induced_hyperlipoproteinemia</link>
             <link consult="y" id="1">https://en.wikipedia.org/wiki/Acrodynia</link>
             <link consult="y" id="1">https://en.wikipedia.org/wiki/Spider_bite</link>
             <link consult="y" id="1">https://en.wikipedia.org/wiki/Snapping_hip_syndrome</link>

@@ -364,8 +364,10 @@ public class ExtractionWikipedia {
                                     if (section.getName().equalsIgnoreCase(Constants.XML_HL_INFOBOX)){
                                         sectionElement = document.getElementsByClass(xmlSection.getId()).first();
                                         int textCount = 1;
-                                        Table infoboxTable = extractInfoboxTexts(sectionElement.select(Constants.HTML_TABLE_TR), textCount, "infobox");
-                                        textList.add(infoboxTable);
+                                        if (sectionElement!=null) {
+                                            Table infoboxTable = extractInfoboxTexts(sectionElement.select(Constants.HTML_TABLE_TR), textCount, Constants.XML_HL_INFOBOX);
+                                            if (infoboxTable != null) textList.add(infoboxTable);
+                                        }
 //                                        System.out.println("extCount: " + textCount + " - SECTION - " + section);
                                         //System.out.println("ENTRA a infobox " + sectionElement.text());
                                     }
@@ -1409,20 +1411,27 @@ public class ExtractionWikipedia {
             for (Element trElement : trElements) {
                 //System.out.println(trElement.toString());
                 Elements thElement = trElement.select(Constants.HTML_TABLE_TH);
-                if (isInfoboxElement(thElement.text())) {
-                    Element tdElement = trElement.select(Constants.HTML_TABLE_TD).first();
-                    trList.add(thElement.text() + " :=> " + tdElement.text());
+                if (thElement!=null) {
+                    if (isInfoboxElement(thElement.text())) {
+                        Element tdElement = trElement.select(Constants.HTML_TABLE_TD).first();
+                        if (tdElement!=null) {
+                            trList.add(thElement.text() + " :=> " + tdElement.text());
 //                    System.out.println(thElement.text() + " :=> " + tdElement.text());
+                        }
+                    }
                 }
             }
 
-            table = new Table();
-            table.setId(countText);
-            table.setTextOrder(countText);
-            table.setTitle(title);
-            table.setTrList(trList);
-            // Agrega la lista de enlaces al objeto lista "List_"
-            table.setUrlList( getTableTextUrls( trElements ) );
+            //Si la lista tiene elementos se crea el objeto tabla infobox
+            if (trList.size()>0) {
+                table = new Table();
+                table.setId(countText);
+                table.setTextOrder(countText);
+                table.setTitle(title);
+                table.setTrList(trList);
+                // Agrega la lista de enlaces al objeto lista "List_"
+                table.setUrlList(getTableTextUrls(trElements));
+            }
         }
 
         return table;
