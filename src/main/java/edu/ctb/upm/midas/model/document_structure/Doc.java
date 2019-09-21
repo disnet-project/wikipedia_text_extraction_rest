@@ -29,6 +29,8 @@ public class Doc {
     private List<Code> codeList;
     private List<Reference> referenceList;
 
+    private Information information;
+
 
     public Doc() {
         this.diseaseArticle = false;
@@ -122,4 +124,11 @@ public class Doc {
         this.referenceList = referenceList;
     }
 
+    public Information getInformation() {
+        return information;
+    }
+
+    public void setInformation(Information information) {
+        this.information = information;
+    }
 }
